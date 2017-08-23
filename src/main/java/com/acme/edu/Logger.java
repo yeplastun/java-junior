@@ -1,26 +1,29 @@
 package com.acme.edu;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 public class Logger {
-    private static Map<Class, String> prefixes = new HashMap<>();
+    private static final Map<Class, String> PREFIXES;
 
     static {
-        prefixes.put(Object.class, "reference");
-        prefixes.put(String.class, "string");
-        prefixes.put(Character.class, "char");
-        prefixes.put(Byte.class, "primitive");
-        prefixes.put(Short.class, "primitive");
-        prefixes.put(Integer.class, "primitive");
-        prefixes.put(Long.class, "primitive");
-        prefixes.put(Boolean.class, "primitive");
-        prefixes.put(Float.class, "primitive");
-        prefixes.put(Double.class, "primitive");
+        Map<Class, String> tempMap = new HashMap<>();
+        tempMap.put(Object.class, "reference");
+        tempMap.put(String.class, "string");
+        tempMap.put(Character.class, "char");
+        tempMap.put(Byte.class, "primitive");
+        tempMap.put(Short.class, "primitive");
+        tempMap.put(Integer.class, "primitive");
+        tempMap.put(Long.class, "primitive");
+        tempMap.put(Boolean.class, "primitive");
+        tempMap.put(Float.class, "primitive");
+        tempMap.put(Double.class, "primitive");
+        PREFIXES = Collections.unmodifiableMap(tempMap);
     }
 
     private static String format(Object o) {
-        return String.format("%s: %s", prefixes.get(o.getClass()), o.toString());
+        return String.format("%s: %s", PREFIXES.get(o.getClass()), o.toString());
     }
 
     private static void print(Object o) {
