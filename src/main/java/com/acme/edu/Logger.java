@@ -1,5 +1,7 @@
 package com.acme.edu;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -22,15 +24,18 @@ public class Logger {
         PREFIXES = Collections.unmodifiableMap(tempMap);
     }
 
-    private static String format(Object o) {
+    private static String format(@NotNull Object o) {
         return String.format("%s: %s", PREFIXES.get(o.getClass()), o.toString());
     }
 
-    private static void print(Object o) {
+    private static void print(@NotNull Object o) {
         System.out.println(format(o));
     }
 
     public static void log(Object message) {
+        if (message == null) {
+            throw new IllegalArgumentException("loggable message mustn't be null");
+        }
         print(message);
     }
 }
