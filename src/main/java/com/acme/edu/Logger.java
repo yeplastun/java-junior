@@ -1,45 +1,41 @@
 package com.acme.edu;
 
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
 public class Logger {
-    private static void checkNotNull(Object object) {
-        if (object == null) {
-            throw new IllegalArgumentException("Log object should not be null");
-        }
+    private static final Map<Class, String> PREFIXES;
+
+    static {
+        Map<Class, String> tempMap = new HashMap<>();
+        tempMap.put(Object.class, "reference");
+        tempMap.put(String.class, "string");
+        tempMap.put(Character.class, "char");
+        tempMap.put(Byte.class, "primitive");
+        tempMap.put(Short.class, "primitive");
+        tempMap.put(Integer.class, "primitive");
+        tempMap.put(Long.class, "primitive");
+        tempMap.put(Boolean.class, "primitive");
+        tempMap.put(Float.class, "primitive");
+        tempMap.put(Double.class, "primitive");
+        PREFIXES = Collections.unmodifiableMap(tempMap);
     }
 
-    public static void log(int message) {
-        checkNotNull(message);
-
-        System.out.println("primitive: " + message);
+    private static String format(@NotNull Object o) {
+        return String.format("%s: %s", PREFIXES.get(o.getClass()), o.toString());
     }
 
-    public static void log(byte message) {
-        checkNotNull(message);
-
-        System.out.println("primitive: " + message);
-    }
-
-    public static void log(String message) {
-        checkNotNull(message);
-
-        System.out.println("string: " + message);
-    }
-
-    public static void log(boolean message) {
-        checkNotNull(message);
-
-        System.out.println("primitive: " + message);
+    private static void print(@NotNull Object o) {
+        System.out.println(format(o));
     }
 
     public static void log(Object message) {
-        checkNotNull(message);
-
-        System.out.println("reference: " + message);
-    }
-
-    public static void log(char message) {
-        checkNotNull(message);
-
-        System.out.println("char: " + message);
+        if (message == null) {
+            throw new IllegalArgumentException("loggable message mustn't be null");
+        }
+        print(message);
     }
 }
