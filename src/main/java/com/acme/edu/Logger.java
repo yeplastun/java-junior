@@ -25,11 +25,11 @@ public class Logger {
     }
 
     private static String format(@NotNull Object o) {
-        return String.format("%s: %s", PREFIXES.get(o.getClass()), o.toString());
+        return String.format("%s: %s" + System.lineSeparator(), PREFIXES.get(o.getClass()), o.toString());
     }
 
     private static void print(@NotNull Object o) {
-        System.out.println(format(o));
+        System.out.print(format(o));
     }
 
     public static void log(Object message) {
