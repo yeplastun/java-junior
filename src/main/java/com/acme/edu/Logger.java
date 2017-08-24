@@ -1,41 +1,35 @@
 package com.acme.edu;
 
-import org.jetbrains.annotations.NotNull;
-
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import static com.acme.edu.Utility.*;
 
 public class Logger {
-    private static final Map<Class, String> PREFIXES;
-
-    static {
-        Map<Class, String> tempMap = new HashMap<>();
-        tempMap.put(Object.class, "reference");
-        tempMap.put(String.class, "string");
-        tempMap.put(Character.class, "char");
-        tempMap.put(Byte.class, "primitive");
-        tempMap.put(Short.class, "primitive");
-        tempMap.put(Integer.class, "primitive");
-        tempMap.put(Long.class, "primitive");
-        tempMap.put(Boolean.class, "primitive");
-        tempMap.put(Float.class, "primitive");
-        tempMap.put(Double.class, "primitive");
-        PREFIXES = Collections.unmodifiableMap(tempMap);
-    }
-
-    private static String format(@NotNull Object o) {
-        return String.format("%s: %s", PREFIXES.get(o.getClass()), o.toString());
-    }
-
-    private static void print(@NotNull Object o) {
-        System.out.println(format(o));
-    }
-
     public static void log(Object message) {
         if (message == null) {
             throw new IllegalArgumentException("loggable message mustn't be null");
         }
-        print(message);
+
+        Class clazz = message.getClass();
+        if (State.previousClass == null) {
+            saveState(message, clazz);
+            return;
+        }
+
+        if (clazz.equals(State.previousClass) && getObjectFromMapOrDefault(clazz, NEED_TO_COLLECT)) {
+            getObjectFromMapOrDefault(clazz, COLLECTORS).accept(message);
+            return;
+        }
+
+        Utility.print();
+        saveState(message, clazz);
+    }
+
+    private static void saveState(Object message, Class clazz) {
+        State.previousClass = clazz;
+        State.previousInstance = message;
+    }
+
+    public static void flush() {
+        Utility.print();
+        saveState(null, null);
     }
 }
