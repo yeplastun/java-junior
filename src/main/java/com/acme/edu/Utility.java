@@ -2,6 +2,7 @@ package com.acme.edu;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.lang.reflect.Array;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -18,6 +19,7 @@ class Utility {
     static {
         Map<Class, String> tempMap = new HashMap<>();
         tempMap.put(Object.class, "reference");
+        tempMap.put(int[].class, "primitives array");
         tempMap.put(String.class, "string");
         tempMap.put(Character.class, "char");
         tempMap.put(Byte.class, "primitive");
@@ -30,10 +32,8 @@ class Utility {
         Map<Class, Boolean> tempMap = new HashMap<>();
         tempMap.put(Object.class, Boolean.FALSE);
         tempMap.put(String.class, Boolean.TRUE);
-        tempMap.put(Character.class, Boolean.FALSE);
         tempMap.put(Byte.class, Boolean.TRUE);
         tempMap.put(Integer.class, Boolean.TRUE);
-        tempMap.put(Boolean.class, Boolean.FALSE);
         NEED_TO_COLLECT = Collections.unmodifiableMap(tempMap);
     }
 
@@ -60,6 +60,7 @@ class Utility {
     static {
         Map<Class, Function<Object, String>> tempMap = new HashMap<>();
         tempMap.put(Object.class, Utility::defaultFormatter);
+        tempMap.put(int[].class, Utility::intArrayFormatter);
         tempMap.put(String.class, Utility::stringFormatter);
         tempMap.put(Integer.class, Utility::numberFormatter);
         tempMap.put(Byte.class, Utility::numberFormatter);
@@ -127,5 +128,22 @@ class Utility {
 
     private static String numberFormatter(@NotNull Object o) {
         return String.format("%s: %s", getObjectFromMapOrDefault(o.getClass(), PREFIXES), State.sum);
+    }
+
+    private static String intArrayFormatter(@NotNull Object o) {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder
+                .append(getObjectFromMapOrDefault(int[].class, PREFIXES))
+                .append(": {");
+        int[] castedArray = (int[]) o;
+        for (int i = 0; i < castedArray.length - 1; i++) {
+            stringBuilder.append(castedArray[i])
+                    .append(", ");
+        }
+        stringBuilder
+                .append(castedArray[castedArray.length - 1])
+                .append("}");
+
+        return stringBuilder.toString();
     }
 }

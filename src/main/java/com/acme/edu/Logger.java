@@ -1,5 +1,7 @@
 package com.acme.edu;
 
+import java.util.Arrays;
+
 import static com.acme.edu.Utility.*;
 
 public class Logger {
@@ -36,10 +38,5 @@ public class Logger {
         }
         Utility.print();
         saveState(null, null);
-    }
-
-    public static void instantLog(Object o) {
-        log(o);
-        flush();
     }
 }
