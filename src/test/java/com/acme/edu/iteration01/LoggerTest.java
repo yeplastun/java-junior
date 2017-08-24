@@ -27,9 +27,9 @@ public class LoggerTest implements SysoutCaptureAndAssertionAbility {
     @Test
     public void shouldLogInteger() throws IOException {
         //region when
-        Logger.log(1);
-        Logger.log(0);
-        Logger.log(-1);
+        Logger.instantLog(1);
+        Logger.instantLog(0);
+        Logger.instantLog(-1);
         //endregion
 
         //region then
@@ -41,9 +41,9 @@ public class LoggerTest implements SysoutCaptureAndAssertionAbility {
     @Test
     public void shouldLogByte() throws IOException {
         //region when
-        Logger.log((byte) 1);
-        Logger.log((byte) 0);
-        Logger.log((byte) -1);
+        Logger.instantLog((byte) 1);
+        Logger.instantLog((byte) 0);
+        Logger.instantLog((byte) -1);
         //endregion
 
         //region then
@@ -57,8 +57,8 @@ public class LoggerTest implements SysoutCaptureAndAssertionAbility {
     @Test
     public void shouldLogChar() throws IOException {
         //region when
-        Logger.log('a');
-        Logger.log('b');
+        Logger.instantLog('a');
+        Logger.instantLog('b');
         //endregion
 
         //region then
@@ -71,8 +71,8 @@ public class LoggerTest implements SysoutCaptureAndAssertionAbility {
     @Test
     public void shouldLogString() throws IOException {
         //region when
-        Logger.log("test string 1");
-        Logger.log("other str");
+        Logger.instantLog("test string 1");
+        Logger.instantLog("other str");
         //endregion
 
         //region then
@@ -85,8 +85,8 @@ public class LoggerTest implements SysoutCaptureAndAssertionAbility {
     @Test
     public void shouldLogBoolean() throws IOException {
         //region when
-        Logger.log(true);
-        Logger.log(false);
+        Logger.instantLog(true);
+        Logger.instantLog(false);
         //endregion
 
         //region then
@@ -99,7 +99,7 @@ public class LoggerTest implements SysoutCaptureAndAssertionAbility {
     @Test
     public void shouldLogReference() throws IOException {
         //region when
-        Logger.log(new Object());
+        Logger.instantLog(new Object());
         //endregion
 
         //region then

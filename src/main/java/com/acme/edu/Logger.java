@@ -31,7 +31,15 @@ public class Logger {
     }
 
     public static void flush() {
+        if (State.previousClass == null) {
+            return;
+        }
         Utility.print();
         saveState(null, null);
+    }
+
+    public static void instantLog(Object o) {
+        log(o);
+        flush();
     }
 }

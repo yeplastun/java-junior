@@ -12,7 +12,7 @@ class Utility {
     static final Map<Class, Boolean> NEED_TO_COLLECT;
     static final Map<Class, Consumer<Object>> COLLECTORS;
     static final Map<Class, Consumer<Object>> INITIALIZERS;
-    static final Map<Class, Function<Object, String>> FORMATTERS;
+    private static final Map<Class, Function<Object, String>> FORMATTERS;
     private static final Map<Class, String> PREFIXES;
 
     static {
@@ -49,7 +49,8 @@ class Utility {
 
     static {
         Map<Class, Consumer<Object>> tempMap = new HashMap<>();
-        tempMap.put(Object.class, Utility::defaultCollector);
+        tempMap.put(Object.class, o -> {
+        });
         tempMap.put(String.class, Utility::stringCollector);
         tempMap.put(Byte.class, Utility::byteCollector);
         tempMap.put(Integer.class, Utility::intCollector);
@@ -78,14 +79,8 @@ class Utility {
         return a <= 0 || b <= 0 || a + b >= 0;
     }
 
-    private static void defaultCollector(Object o) {
-
-    }
-
     static void print() {
-        System.out.println(getObjectFromMapOrDefault(State.previousClass, FORMATTERS).apply(
-                State.previousInstance));
-        State.sum = 0;
+        System.out.println(getObjectFromMapOrDefault(State.previousClass, FORMATTERS).apply(State.previousInstance));
     }
 
     private static void stringCollector(@NotNull Object o) {
