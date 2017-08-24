@@ -11,6 +11,7 @@ import java.util.function.Function;
 class Utility {
     static final Map<Class, Boolean> NEED_TO_COLLECT;
     static final Map<Class, Consumer<Object>> COLLECTORS;
+    static final Map<Class, Consumer<Object>> INITIALIZERS;
     static final Map<Class, Function<Object, String>> FORMATTERS;
     private static final Map<Class, String> PREFIXES;
 
@@ -38,6 +39,16 @@ class Utility {
 
     static {
         Map<Class, Consumer<Object>> tempMap = new HashMap<>();
+        tempMap.put(Object.class, o -> {
+        });
+        tempMap.put(Integer.class, o -> State.sum = (int) o);
+        tempMap.put(Byte.class, o -> State.sum = (byte) o);
+        tempMap.put(String.class, o -> State.stringCounter = 1);
+        INITIALIZERS = Collections.unmodifiableMap(tempMap);
+    }
+
+    static {
+        Map<Class, Consumer<Object>> tempMap = new HashMap<>();
         tempMap.put(Object.class, Utility::defaultCollector);
         tempMap.put(String.class, Utility::stringCollector);
         tempMap.put(Byte.class, Utility::byteCollector);
@@ -49,6 +60,8 @@ class Utility {
         Map<Class, Function<Object, String>> tempMap = new HashMap<>();
         tempMap.put(Object.class, Utility::defaultFormatter);
         tempMap.put(String.class, Utility::stringFormatter);
+        tempMap.put(Integer.class, Utility::numberFormatter);
+        tempMap.put(Byte.class, Utility::numberFormatter);
         FORMATTERS = Collections.unmodifiableMap(tempMap);
     }
 
@@ -58,7 +71,7 @@ class Utility {
     }
 
     private static boolean isAdditionSafe(int a, byte b) {
-        return a <= 0 || b <= 0 || (byte) a + b >= 0;
+        return a <= 0 || b <= 0 || (byte) (a + b) >= 0;
     }
 
     private static boolean isAdditionSafe(int a, int b) {
@@ -83,13 +96,16 @@ class Utility {
 
         print();
         State.previousInstance = o;
-        State.stringCounter = 0;
+        State.stringCounter = 1;
     }
 
     private static void byteCollector(@NotNull Object o) {
         byte b = (byte) o;
         if (isAdditionSafe(State.sum, b)) {
             State.sum += b;
+        } else {
+            print();
+            State.sum = b;
         }
     }
 
@@ -97,6 +113,9 @@ class Utility {
         int x = (int) o;
         if (isAdditionSafe(State.sum, x)) {
             State.sum += x;
+        } else {
+            print();
+            State.sum = x;
         }
     }
 
@@ -105,8 +124,13 @@ class Utility {
     }
 
     private static String stringFormatter(@NotNull Object o) {
-        return State.stringCounter > 0 ?
-                String.format("%s: %s (x%d)", getObjectFromMapOrDefault(String.class, PREFIXES), o, ++State.stringCounter)
-                : String.format("%s: %s", getObjectFromMapOrDefault(String.class, PREFIXES), o);
+        if (State.stringCounter == 1) {
+            return String.format("%s: %s", getObjectFromMapOrDefault(String.class, PREFIXES), o);
+        }
+        return String.format("%s: %s (x%d)", getObjectFromMapOrDefault(String.class, PREFIXES), o, State.stringCounter);
+    }
+
+    private static String numberFormatter(@NotNull Object o) {
+        return String.format("%s: %s", getObjectFromMapOrDefault(o.getClass(), PREFIXES), State.sum);
     }
 }

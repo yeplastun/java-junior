@@ -10,6 +10,7 @@ public class Logger {
 
         Class clazz = message.getClass();
         if (State.previousClass == null) {
+            getObjectFromMapOrDefault(clazz, INITIALIZERS).accept(message);
             saveState(message, clazz);
             return;
         }
@@ -20,6 +21,7 @@ public class Logger {
         }
 
         Utility.print();
+        getObjectFromMapOrDefault(clazz, INITIALIZERS).accept(message);
         saveState(message, clazz);
     }
 

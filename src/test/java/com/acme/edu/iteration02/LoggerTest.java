@@ -33,6 +33,7 @@ public class LoggerTest implements SysoutCaptureAndAssertionAbility {
         Logger.log(2);
         Logger.log("str 2");
         Logger.log(0);
+        Logger.flush();
         //endregion
 
         //region then
@@ -53,6 +54,7 @@ public class LoggerTest implements SysoutCaptureAndAssertionAbility {
         Logger.log(Integer.MAX_VALUE);
         Logger.log("str 2");
         Logger.log(0);
+        Logger.flush();
         //endregion
 
         //region then
@@ -70,10 +72,11 @@ public class LoggerTest implements SysoutCaptureAndAssertionAbility {
     public void shouldLogCorrectlyByteOverflowWhenSequentBytes() {
         //region when
         Logger.log("str 1");
-        Logger.log((byte)10);
-        Logger.log((byte)Byte.MAX_VALUE);
+        Logger.log((byte) 10);
+        Logger.log((byte) Byte.MAX_VALUE);
         Logger.log("str 2");
         Logger.log(0);
+        Logger.flush();
         //endregion
 
         //region then
@@ -98,6 +101,7 @@ public class LoggerTest implements SysoutCaptureAndAssertionAbility {
         Logger.log("str 3");
         Logger.log("str 3");
         Logger.log("str 3");
+        Logger.flush();
         //endregion
 
         //region then
