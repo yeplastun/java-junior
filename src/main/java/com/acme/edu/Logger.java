@@ -1,7 +1,5 @@
 package com.acme.edu;
 
-import java.util.Arrays;
-
 import static com.acme.edu.Utility.*;
 
 public class Logger {
@@ -17,7 +15,8 @@ public class Logger {
             return;
         }
 
-        if (clazz.equals(State.previousClass) && getObjectFromMapOrDefault(clazz, NEED_TO_COLLECT)) {
+        final boolean needToCollect = clazz.equals(State.previousClass) && getObjectFromMapOrDefault(clazz, NEED_TO_COLLECT);
+        if (needToCollect) {
             getObjectFromMapOrDefault(clazz, COLLECTORS).accept(message);
             return;
         }
