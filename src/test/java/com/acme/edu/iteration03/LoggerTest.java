@@ -2,6 +2,7 @@ package com.acme.edu.iteration03;
 
 import com.acme.edu.Logger;
 import com.acme.edu.SysoutCaptureAndAssertionAbility;
+import com.acme.edu.TrivialLogFormatter;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,7 +27,7 @@ public class LoggerTest implements SysoutCaptureAndAssertionAbility {
 
     @Test
     public void shouldLogIntegersArray() throws IOException {
-        Logger logger = new Logger();
+        Logger logger = new Logger(new TrivialLogFormatter(), System.out);
 
         //region when
         logger.log(new int[] {-1, 0, 1});

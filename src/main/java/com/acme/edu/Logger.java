@@ -2,15 +2,20 @@ package com.acme.edu;
 
 import com.acme.edu.command.*;
 
+import java.io.PrintStream;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 public class Logger {
     private final State state = new State();
+    private final LogFormatter formatter;
     private final Map<Class, LoggerCommand> commands;
+    private final PrintStream stream;
 
-    public Logger() {
+    public Logger(LogFormatter formatter, PrintStream stream) {
+        this.formatter = formatter;
+        this.stream = stream;
         Map<Class, LoggerCommand> tempMap = new HashMap<>();
         tempMap.put(Object.class, new ObjectLoggerCommand());
         tempMap.put(int[].class, new IntArrayLoggerCommand());
@@ -33,7 +38,7 @@ public class Logger {
     }
 
     private void print(State state) {
-        System.out.println(getCommand(state.getPreviousClass()).format(state.getPreviousInstance()));
+        stream.println(formatter.format(getCommand(state.getPreviousClass()).format(state.getPreviousInstance())));
     }
 
     public void log(Object message) {
@@ -54,7 +59,7 @@ public class Logger {
 
             Object objectToLog = state.getObjectToLog();
             if (objectToLog != null) {
-                System.out.println(getCommand(objectToLog.getClass()).format(objectToLog));
+                stream.println(formatter.format(getCommand(objectToLog.getClass()).format(objectToLog)));
                 state.setObjectToPrint(null);
                 saveState(message, clazz);
             }

@@ -2,6 +2,7 @@ package com.acme.edu.iteration01;
 
 import com.acme.edu.Logger;
 import com.acme.edu.SysoutCaptureAndAssertionAbility;
+import com.acme.edu.TrivialLogFormatter;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,7 +27,7 @@ public class LoggerTest implements SysoutCaptureAndAssertionAbility {
 
     @Test
     public void shouldLogInteger() throws IOException {
-        Logger logger = new Logger();
+        Logger logger = new Logger(new TrivialLogFormatter(), System.out);
 
         //region when
         logger.log(1);
@@ -45,7 +46,7 @@ public class LoggerTest implements SysoutCaptureAndAssertionAbility {
 
     @Test
     public void shouldLogByte() throws IOException {
-        Logger logger = new Logger();
+        Logger logger = new Logger(new TrivialLogFormatter(), System.out);
 
         //region when
         logger.log((byte) 1);
@@ -66,7 +67,7 @@ public class LoggerTest implements SysoutCaptureAndAssertionAbility {
 
     @Test
     public void shouldLogChar() throws IOException {
-        Logger logger = new Logger();
+        Logger logger = new Logger(new TrivialLogFormatter(), System.out);
 
         //region when
         logger.log('a');
@@ -84,7 +85,7 @@ public class LoggerTest implements SysoutCaptureAndAssertionAbility {
 
     @Test
     public void shouldLogString() throws IOException {
-        Logger logger = new Logger();
+        Logger logger = new Logger(new TrivialLogFormatter(), System.out);
 
         //region when
         logger.log("test string 1");
@@ -102,7 +103,7 @@ public class LoggerTest implements SysoutCaptureAndAssertionAbility {
 
     @Test
     public void shouldLogBoolean() throws IOException {
-        Logger logger = new Logger();
+        Logger logger = new Logger(new TrivialLogFormatter(), System.out);
 
         //region when
         logger.log(true);
@@ -120,7 +121,7 @@ public class LoggerTest implements SysoutCaptureAndAssertionAbility {
 
     @Test
     public void shouldLogReference() throws IOException {
-        Logger logger = new Logger();
+        Logger logger = new Logger(new TrivialLogFormatter(), System.out);
 
         //region when
         logger.log(new Object());
