@@ -14,11 +14,16 @@ public class IntLoggerCommand extends NumberLoggerCommand {
     @Override
     public void collect(Object o) {
         int x = (int) o;
-        if (isAdditionSafe(state.sum, x)) {
-            state.sum += x;
+        if (isAdditionSafe((Integer) state.getPreviousInstance(), x)) {
+            state.setPreviousInstance((Integer) state.getPreviousInstance() + x);
         } else {
-            print();
-            state.sum = x;
+            state.setObjectToPrint(state.getPreviousInstance());
+            state.setPreviousInstance(x);
         }
+    }
+
+    @Override
+    public void initialize(Object o) {
+        state.setPreviousInstance(o);
     }
 }

@@ -8,17 +8,22 @@ public class ByteLoggerCommand extends NumberLoggerCommand {
     }
 
     private static boolean isAdditionSafe(int a, byte b) {
-        return a <= 0 || b <= 0 || a + b >= 0;
+        return a <= 0 || b <= 0 || (byte) (a + b) >= 0;
     }
 
     @Override
     public void collect(Object o) {
         byte x = (byte) o;
-        if (isAdditionSafe(state.sum, x)) {
-            state.sum += x;
+        if (isAdditionSafe((byte) state.getPreviousInstance(), x)) {
+            state.setPreviousInstance((Integer) state.getPreviousInstance() + x);
         } else {
-            print();
-            state.sum = x;
+            state.setObjectToPrint(state.getPreviousInstance());
+            state.setPreviousInstance(x);
         }
+    }
+
+    @Override
+    public void initialize(Object o) {
+        state.setPreviousInstance(o);
     }
 }

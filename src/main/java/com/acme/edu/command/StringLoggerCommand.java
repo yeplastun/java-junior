@@ -21,32 +21,26 @@ public class StringLoggerCommand extends LoggerCommand {
 
     @Override
     public void collect(Object o) {
-        if (o.equals(state.previousInstance)) {
-            ++state.stringCounter;
+        if (o.equals(state.getPreviousInstance())) {
+            state.setStringCounter(state.getStringCounter() + 1);
             return;
         }
 
-        print();
-        state.previousInstance = o;
-        state.stringCounter = 1;
+        state.setObjectToPrint(state.getPreviousInstance());
+        state.setPreviousInstance(o);
+        state.setStringCounter(1);
     }
 
     @Override
     public void initialize(Object o) {
-        state.stringCounter = 1;
+        state.setStringCounter(1);
     }
 
     @Override
     public String format(Object o) {
-        if (state.stringCounter == 1) {
+        if (state.getStringCounter() == 1) {
             return String.format("%s: %s", getPrefix(), o);
         }
-        return String.format("%s: %s (x%d)", getPrefix(), o, state.stringCounter);
+        return String.format("%s: %s (x%d)", getPrefix(), o, state.getStringCounter());
     }
-
-    private void print() {
-
-    }
-
-
 }
