@@ -2,7 +2,7 @@ package com.acme.edu.command;
 
 import java.util.Arrays;
 
-public class IntArrayLoggerCommand extends LoggerCommand {
+public class IntArrayLoggerStrategy extends LoggerStrategy {
     @Override
     public String getPrefix() {
         return "primitives array";

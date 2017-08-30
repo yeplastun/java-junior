@@ -10,25 +10,25 @@ import java.util.Map;
 public class Logger {
     private final State state = new State();
     private final LogFormatter formatter;
-    private final Map<Class, LoggerCommand> commands;
+    private final Map<Class, LoggerStrategy> commands;
     private final PrintStream stream;
 
     public Logger(LogFormatter formatter, PrintStream stream) {
         this.formatter = formatter;
         this.stream = stream;
-        Map<Class, LoggerCommand> tempMap = new HashMap<>();
-        tempMap.put(Object.class, new ObjectLoggerCommand());
-        tempMap.put(int[].class, new IntArrayLoggerCommand());
-        tempMap.put(String.class, new StringLoggerCommand(state));
-        tempMap.put(Character.class, new CharacterLoggerCommand());
-        tempMap.put(Byte.class, new ByteLoggerCommand(state));
-        tempMap.put(Integer.class, new IntLoggerCommand(state));
-        tempMap.put(Boolean.class, new BooleanLoggerCommand());
+        Map<Class, LoggerStrategy> tempMap = new HashMap<>();
+        tempMap.put(Object.class, new ObjectLoggerStrategy());
+        tempMap.put(int[].class, new IntArrayLoggerStrategy());
+        tempMap.put(String.class, new StringLoggerStrategy(state));
+        tempMap.put(Character.class, new CharacterLoggerStrategy());
+        tempMap.put(Byte.class, new ByteLoggerStrategy(state));
+        tempMap.put(Integer.class, new IntLoggerStrategy(state));
+        tempMap.put(Boolean.class, new BooleanLoggerStrategy());
         commands = Collections.unmodifiableMap(tempMap);
     }
 
-    private LoggerCommand getCommand(Class clazz) {
-        LoggerCommand command = commands.get(clazz);
+    private LoggerStrategy getCommand(Class clazz) {
+        LoggerStrategy command = commands.get(clazz);
         return command == null ? commands.get(Object.class) : command;
     }
 

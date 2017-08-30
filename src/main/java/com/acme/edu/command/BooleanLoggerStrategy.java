@@ -1,6 +1,6 @@
 package com.acme.edu.command;
 
-public class BooleanLoggerCommand extends LoggerCommand {
+public class BooleanLoggerStrategy extends LoggerStrategy {
     @Override
     public String getPrefix() {
         return "primitive";

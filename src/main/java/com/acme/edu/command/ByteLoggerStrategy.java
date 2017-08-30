@@ -2,19 +2,19 @@ package com.acme.edu.command;
 
 import com.acme.edu.State;
 
-public class IntLoggerCommand extends NumberLoggerCommand {
-    public IntLoggerCommand(State state) {
+public class ByteLoggerStrategy extends NumberLoggerStrategy {
+    public ByteLoggerStrategy(State state) {
         super(state);
     }
 
-    private static boolean isAdditionSafe(int a, int b) {
-        return a <= 0 || b <= 0 || a + b >= 0;
+    private static boolean isAdditionSafe(int a, byte b) {
+        return a <= 0 || b <= 0 || (byte) (a + b) >= 0;
     }
 
     @Override
     public void collect(Object o) {
-        int x = (int) o;
-        if (isAdditionSafe((Integer) state.getPreviousInstance(), x)) {
+        byte x = (byte) o;
+        if (isAdditionSafe((byte) state.getPreviousInstance(), x)) {
             state.setPreviousInstance((Integer) state.getPreviousInstance() + x);
         } else {
             state.setObjectToPrint(state.getPreviousInstance());

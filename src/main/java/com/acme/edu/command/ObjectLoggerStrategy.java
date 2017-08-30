@@ -1,6 +1,6 @@
 package com.acme.edu.command;
 
-public class ObjectLoggerCommand extends LoggerCommand {
+public class ObjectLoggerStrategy extends LoggerStrategy {
     @Override
     public String getPrefix() {
         return "reference";

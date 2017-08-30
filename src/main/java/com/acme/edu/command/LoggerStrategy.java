@@ -1,6 +1,6 @@
 package com.acme.edu.command;
 
-public abstract class LoggerCommand {
+public abstract class LoggerStrategy {
     public abstract String getPrefix();
 
     public boolean requiresCollection() {

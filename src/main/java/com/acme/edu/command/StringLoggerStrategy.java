@@ -2,10 +2,10 @@ package com.acme.edu.command;
 
 import com.acme.edu.State;
 
-public class StringLoggerCommand extends LoggerCommand {
+public class StringLoggerStrategy extends LoggerStrategy {
     private State state;
 
-    public StringLoggerCommand(State state) {
+    public StringLoggerStrategy(State state) {
         this.state = state;
     }
 

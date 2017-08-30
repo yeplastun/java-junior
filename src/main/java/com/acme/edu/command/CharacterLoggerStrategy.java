@@ -1,6 +1,6 @@
 package com.acme.edu.command;
 
-public class CharacterLoggerCommand extends LoggerCommand {
+public class CharacterLoggerStrategy extends LoggerStrategy {
     @Override
     public String getPrefix() {
         return "char";

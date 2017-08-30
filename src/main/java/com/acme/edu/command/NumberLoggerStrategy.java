@@ -2,10 +2,10 @@ package com.acme.edu.command;
 
 import com.acme.edu.State;
 
-public abstract class NumberLoggerCommand extends LoggerCommand {
+public abstract class NumberLoggerStrategy extends LoggerStrategy {
     protected final State state;
 
-    public NumberLoggerCommand(State state) {
+    public NumberLoggerStrategy(State state) {
         this.state = state;
     }
 
