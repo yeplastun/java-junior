@@ -44,11 +44,8 @@ public class RxLoggerTest implements SysoutCaptureAndAssertionAbility {
         logger.log("finish");
 
         // Then
-        assertSysoutContains(
-                "string: start" + lineSeparator()
-        );
-        assertSysoutContains(
-                "string: finish" + lineSeparator()
-        );
+        assertSysoutContains("string: start");
+        assertSysoutContains("@");
+        assertSysoutContains("string: finish");
     }
 }

@@ -29,8 +29,10 @@ public class RxLogger {
         subjects.get(String.class).onNext(message);
     }
 
+    // todo redactor this method to avoid stackoverflow exception
     public void flush() {
         subjects.values().forEach(PublishSubject::onComplete);
+        subjects.keySet().forEach(clazz -> subjects.put(clazz, PublishSubject.create()));
     }
 
     private void setUpSubscribers() {
