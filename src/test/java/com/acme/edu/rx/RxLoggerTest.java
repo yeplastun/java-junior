@@ -35,4 +35,20 @@ public class RxLoggerTest implements SysoutCaptureAndAssertionAbility {
                         + "string: finish" + lineSeparator()
         );
     }
+
+    @Test
+    public void shouldLogObjectReference() {
+        // Given, when
+        logger.log("start");
+        logger.log(new Object());
+        logger.log("finish");
+
+        // Then
+        assertSysoutContains(
+                "string: start" + lineSeparator()
+        );
+        assertSysoutContains(
+                "string: finish" + lineSeparator()
+        );
+    }
 }

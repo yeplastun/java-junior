@@ -10,6 +10,7 @@ public class RxLogger {
 
     public RxLogger() {
         subjects = new HashMap<>();
+        subjects.put(Object.class, PublishSubject.create());
         subjects.put(Integer.class, PublishSubject.create());
         subjects.put(String.class, PublishSubject.create());
 
@@ -17,6 +18,7 @@ public class RxLogger {
     }
 
     public void log(Object message) {
+        subjects.get(Object.class).onNext(message);
     }
 
     public void log(Integer message) {
@@ -32,8 +34,15 @@ public class RxLogger {
     }
 
     private void setUpSubscribers() {
+        setUpOjectSubscriber();
         setUpIntegerSubscriber();
         setUpStringSubcriber();
+    }
+
+    private void setUpOjectSubscriber() {
+        subjects.get(Object.class)
+                .map(o -> "reference: " + o)
+                .subscribe(System.out::println);
     }
 
     private void setUpIntegerSubscriber() {
