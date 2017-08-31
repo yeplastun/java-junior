@@ -1,9 +1,7 @@
 package com.acme.edu;
 
-import com.acme.edu.rx.RxLogger;
-
 public class LoggerFacade {
-    private static final RxLogger LOGGER = new RxLogger();
+    private static final Logger LOGGER = new Logger(new TrivialLogFormatter(), System.out);
 
     public static void log(Object o) {
         LOGGER.log(o);
