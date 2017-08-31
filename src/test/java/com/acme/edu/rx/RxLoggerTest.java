@@ -21,7 +21,7 @@ public class RxLoggerTest implements SysoutCaptureAndAssertionAbility {
     }
 
     @Test
-    public void loggerShouldSumIntegers() {
+    public void shouldLogSumOfIntegers() {
         // Given, when
         logger.log("start");
         logger.log(1);
@@ -30,9 +30,9 @@ public class RxLoggerTest implements SysoutCaptureAndAssertionAbility {
 
         // Then
         assertSysoutEquals(
-                "start" + lineSeparator()
-                        + "3" + lineSeparator()
-                        + "finish" + lineSeparator()
+                "string: start" + lineSeparator()
+                        + "primitive: 3" + lineSeparator()
+                        + "string: finish" + lineSeparator()
         );
     }
 }
