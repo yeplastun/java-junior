@@ -1,12 +1,9 @@
 package com.acme.edu.iteration03;
 
-import com.acme.edu.Logger;
 import com.acme.edu.LoggerFacade;
 import com.acme.edu.SysoutCaptureAndAssertionAbility;
-import com.acme.edu.TrivialLogFormatter;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -28,7 +25,6 @@ public class LoggerTest implements SysoutCaptureAndAssertionAbility {
     //endregion
 
     @Test
-    @Ignore
     public void shouldLogIntegersArray() throws IOException {
         //region when
         LoggerFacade.log(new int[] {-1, 0, 1});
