@@ -1,15 +1,32 @@
 package com.acme.edu.rx;
 
+import com.acme.edu.rx.formatter.LogFormatter;
+import com.acme.edu.rx.formatter.TrivialLogFormatter;
+import io.reactivex.Observable;
 import io.reactivex.subjects.PublishSubject;
+
+import java.io.PrintStream;
+import java.util.List;
 
 @SuppressWarnings({"WeakerAccess"})
 public class RxLogger {
 
     private PublishSubject<Object> stream;
+    private LogFormatter formatter;
+    private PrintStream outputStream;
 
     public RxLogger() {
         stream = PublishSubject.create();
-        setUpSubscribers();
+        formatter = new TrivialLogFormatter();
+        this.outputStream = System.out;
+        setUpStreamProcessing();
+    }
+
+    public RxLogger(LogFormatter formatter, PrintStream outputStream) {
+        stream = PublishSubject.create();
+        this.formatter = formatter;
+        this.outputStream = outputStream;
+        setUpStreamProcessing();
     }
 
     public void log(Object message) {
@@ -19,44 +36,39 @@ public class RxLogger {
     public void flush() {
         stream.onComplete();
         stream = PublishSubject.create();
-        setUpSubscribers();
+        setUpStreamProcessing();
     }
 
-    private void setUpSubscribers() {
-        setUpObjectSubscriber();
-        setUpIntegerSubscriber();
-        setUpStringSubscriber();
+    private void setUpStreamProcessing() {
+        Observable.merge(
+                setUpObjectProcessing(),
+                setUpIntegerProcessing(),
+                setUpStringProcessing()
+        )
+                .map(formatter::format)
+                .subscribe(outputStream::println);
     }
 
-    private void setUpObjectSubscriber() {
-        stream
-                .filter(m -> m.getClass() == Object.class)
+    private Observable<Object> setUpObjectProcessing() {
+        return getTypeStream(Object.class)
+                .flatMap(Observable::fromArray);
+    }
+
+    private Observable<Integer> setUpIntegerProcessing() {
+        return getTypeStream(Integer.class)
+                .map(l -> +l.stream().reduce((x, y) -> x + y).get());
+    }
+
+    private Observable<String> setUpStringProcessing() {
+        return getTypeStream(String.class)
+                .map(l -> l.stream().reduce((x, y) -> x + y).get());
+    }
+
+    private <T> Observable<List<T>> getTypeStream(Class<T> clazz) {
+        return stream
+                .ofType(clazz)
+                .filter(m -> m.getClass() == clazz)
                 .buffer(stream.map(Object::getClass).distinctUntilChanged())
-                .filter(l -> !l.isEmpty())
-                .subscribe(l -> l.forEach(m -> System.out.println("reference: " + m.toString())));
-    }
-
-    private void setUpIntegerSubscriber() {
-        stream
-                .ofType(Integer.class)
-                .buffer(stream.map(Object::getClass).distinctUntilChanged())
-                .filter(l -> !l.isEmpty())
-                .subscribe(
-                        l -> System.out.println(
-                                "primitive: " + l.stream().reduce((x, y) -> x + y).get()
-                        )
-                );
-    }
-
-    private void setUpStringSubscriber() {
-        stream
-                .ofType(String.class)
-                .buffer(stream.map(Object::getClass).distinctUntilChanged())
-                .filter(l -> !l.isEmpty())
-                .subscribe(
-                        l -> System.out.println(
-                                "string: " + l.stream().reduce((x, y) -> x + y).get()
-                        )
-                );
+                .filter(l -> !l.isEmpty());
     }
 }
