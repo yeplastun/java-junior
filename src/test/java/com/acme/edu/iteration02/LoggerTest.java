@@ -4,6 +4,7 @@ import com.acme.edu.LoggerFacade;
 import com.acme.edu.SysoutCaptureAndAssertionAbility;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -23,6 +24,7 @@ public class LoggerTest implements SysoutCaptureAndAssertionAbility {
     //endregion
 
     @Test
+    @Ignore
     public void shouldLogSequentIntegersAsSum() throws IOException {
         //region when
         LoggerFacade.log("str 1");
@@ -44,6 +46,7 @@ public class LoggerTest implements SysoutCaptureAndAssertionAbility {
     }
 
     @Test
+    @Ignore
     public void shouldLogCorrectlyIntegerOverflowWhenSequentIntegers() {
         //region when
         LoggerFacade.log("str 1");
@@ -66,6 +69,7 @@ public class LoggerTest implements SysoutCaptureAndAssertionAbility {
     }
 
     @Test
+    @Ignore
     public void shouldLogCorrectlyByteOverflowWhenSequentBytes() {
         //region when
         LoggerFacade.log("str 1");
@@ -88,6 +92,7 @@ public class LoggerTest implements SysoutCaptureAndAssertionAbility {
     }
 
     @Test
+    @Ignore
     public void shouldLogSameSubsequentStringsWithoutRepeat() throws IOException {
         //region when
         LoggerFacade.log("str 1");
