@@ -6,4 +6,6 @@ public interface LogFormatter {
     String format(Integer message);
 
     String format(String message);
+
+    String format(int[] message);
 }

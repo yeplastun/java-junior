@@ -8,7 +8,7 @@ import io.reactivex.subjects.PublishSubject;
 import java.io.PrintStream;
 import java.util.List;
 
-@SuppressWarnings({"WeakerAccess"})
+@SuppressWarnings({"WeakerAccess", "unchecked", "ConstantConditions"})
 public class RxLogger {
 
     private PublishSubject<Object> stream;
@@ -41,12 +41,11 @@ public class RxLogger {
 
     private void setUpStreamProcessing() {
         Observable.merge(
-                setUpObjectProcessing(),
-                setUpIntegerProcessing(),
-                setUpStringProcessing()
-        )
-                .map(formatter::format)
-                .subscribe(outputStream::println);
+                setUpObjectProcessing().map(formatter::format),
+                setUpIntegerProcessing().map(formatter::format),
+                setUpStringProcessing().map(formatter::format),
+                setUpArrayProcessor().map(formatter::format)
+        ).subscribe(outputStream::println);
     }
 
     private Observable<Object> setUpObjectProcessing() {
@@ -56,12 +55,17 @@ public class RxLogger {
 
     private Observable<Integer> setUpIntegerProcessing() {
         return getTypeStream(Integer.class)
-                .map(l -> +l.stream().reduce((x, y) -> x + y).get());
+                .map(l -> l.stream().reduce((x, y) -> x + y).get());
     }
 
     private Observable<String> setUpStringProcessing() {
         return getTypeStream(String.class)
                 .map(l -> l.stream().reduce((x, y) -> x + y).get());
+    }
+
+    private Observable<List> setUpArrayProcessor() {
+        return getTypeStream(List.class)
+                .flatMap(Observable::fromArray);
     }
 
     private <T> Observable<List<T>> getTypeStream(Class<T> clazz) {
