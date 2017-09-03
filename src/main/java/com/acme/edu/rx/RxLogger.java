@@ -1,48 +1,25 @@
 package com.acme.edu.rx;
 
-import io.reactivex.Observable;
 import io.reactivex.subjects.PublishSubject;
 
-import java.util.HashMap;
-import java.util.Map;
-
-@SuppressWarnings({"unchecked", "WeakerAccess"})
+@SuppressWarnings({"WeakerAccess"})
 public class RxLogger {
 
-    private Map<Class<?>, PublishSubject> subjects;
+    private PublishSubject<Object> stream;
 
     public RxLogger() {
-        createSubjects();
+        stream = PublishSubject.create();
         setUpSubscribers();
     }
 
     public void log(Object message) {
-        subjects.get(Object.class).onNext(message);
-    }
-
-    public void log(Integer message) {
-        subjects.get(Integer.class).onNext(message);
-    }
-
-    public void log(String message) {
-        subjects.get(String.class).onNext(message);
+        stream.onNext(message);
     }
 
     public void flush() {
-        completeSubjects();
-        createSubjects();
+        stream.onComplete();
+        stream = PublishSubject.create();
         setUpSubscribers();
-    }
-
-    private void createSubjects() {
-        subjects = new HashMap<>();
-        subjects.put(Object.class, PublishSubject.create());
-        subjects.put(Integer.class, PublishSubject.<Integer>create());
-        subjects.put(String.class, PublishSubject.<String>create());
-    }
-
-    private void completeSubjects() {
-        subjects.values().forEach(PublishSubject::onComplete);
     }
 
     private void setUpSubscribers() {
@@ -52,43 +29,34 @@ public class RxLogger {
     }
 
     private void setUpObjectSubscriber() {
-        if (subjects.get(Object.class).hasComplete()) return;
-        subjects.get(Object.class)
-                .map(o -> "reference: " + o)
-                .subscribe(System.out::println);
+        stream
+                .filter(m -> m.getClass() == Object.class)
+                .buffer(stream.map(Object::getClass).distinctUntilChanged())
+                .filter(l -> !l.isEmpty())
+                .subscribe(l -> l.forEach(m -> System.out.println("reference: " + m.toString())));
     }
 
     private void setUpIntegerSubscriber() {
-        if (subjects.get(Integer.class).hasComplete()) return;
-        subjects.get(Integer.class)
-                .takeUntil(Observable.merge(
-                        subjects.get(Object.class),
-                        subjects.get(String.class)
-                ))
-                .reduce(
-                        (x, y) -> (int) x + (int) y
-                )
-                .doOnComplete(this::setUpIntegerSubscriber)
-                .map(i -> "primitive: " + i)
-                .subscribe(System.out::println);
+        stream
+                .ofType(Integer.class)
+                .buffer(stream.map(Object::getClass).distinctUntilChanged())
+                .filter(l -> !l.isEmpty())
+                .subscribe(
+                        l -> System.out.println(
+                                "primitive: " + l.stream().reduce((x, y) -> x + y).get()
+                        )
+                );
     }
 
     private void setUpStringSubscriber() {
-        if (subjects.get(String.class).hasComplete()) return;
-        subjects.get(String.class)
-                .takeUntil(Observable.merge(
-                        subjects.get(Object.class),
-                        subjects.get(Integer.class),
-                        subjects.get(String.class)
-                                .distinctUntilChanged()
-                                .skip(1)
-                ))
-                .reduce(
-                        (x, y) -> (String) x + y
-                )
-                .doOnComplete(this::setUpStringSubscriber)
-                .map(s -> "string: " + s)
-                .subscribe(System.out::println);
+        stream
+                .ofType(String.class)
+                .buffer(stream.map(Object::getClass).distinctUntilChanged())
+                .filter(l -> !l.isEmpty())
+                .subscribe(
+                        l -> System.out.println(
+                                "string: " + l.stream().reduce((x, y) -> x + y).get()
+                        )
+                );
     }
-
 }
