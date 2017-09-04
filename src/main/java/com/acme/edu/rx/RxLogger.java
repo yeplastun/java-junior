@@ -1,13 +1,15 @@
 package com.acme.edu.rx;
 
+import com.acme.edu.rx.exception.LogMessageException;
 import com.acme.edu.rx.formatter.LogFormatter;
 import com.acme.edu.rx.processor.ByteLogProcessor;
 import com.acme.edu.rx.processor.IntegerLogProcessor;
 import com.acme.edu.rx.processor.StringLogProcessor;
+import com.acme.edu.rx.saver.LogSaver;
 import io.reactivex.Observable;
 import io.reactivex.subjects.PublishSubject;
+import org.jetbrains.annotations.NotNull;
 
-import java.io.PrintStream;
 import java.util.Arrays;
 import java.util.List;
 
@@ -15,17 +17,23 @@ import java.util.List;
 public class RxLogger {
 
     private PublishSubject<Object> stream;
+    private PublishSubject<LogMessageException> exceptionStream;
     private LogFormatter formatter;
-    private PrintStream outputStream;
+    private LogSaver saver;
 
-    public RxLogger(LogFormatter formatter, PrintStream outputStream) {
+    public RxLogger(LogFormatter formatter, LogSaver saver) {
         stream = PublishSubject.create();
+        exceptionStream = PublishSubject.create();
         this.formatter = formatter;
-        this.outputStream = outputStream;
+        this.saver = saver;
         setUpStreamProcessing();
     }
 
-    public void log(Object message) {
+    public PublishSubject<LogMessageException> getExceptionStream() {
+        return exceptionStream;
+    }
+
+    public void log(@NotNull Object message) throws IllegalArgumentException {
         stream.onNext(message);
     }
 
@@ -44,7 +52,12 @@ public class RxLogger {
                 setUpCharProcessing().map(formatter::format),
                 setUpStringProcessing().map(formatter::format),
                 setUpIntArrayProcessing().map(formatter::format)
-        )).subscribe(outputStream::println);
+        ))
+                .doOnNext(saver::save)
+                .subscribe(__ -> {}, ex -> {
+                    flush();
+                    exceptionStream.onNext((LogMessageException) ex);
+                });
     }
 
     private Observable<Object> setUpObjectProcessing() {

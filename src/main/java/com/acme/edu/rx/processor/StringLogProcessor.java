@@ -1,5 +1,6 @@
 package com.acme.edu.rx.processor;
 
+import com.acme.edu.rx.exception.InvalidLogMessageException;
 import io.reactivex.Observable;
 
 import java.util.ArrayList;
@@ -9,11 +10,18 @@ import java.util.Objects;
 public class StringLogProcessor {
     private StringLogProcessor() { }
 
-    public static Observable<String> process(List<String> messages) {
+    public static Observable<String> process(List<String> messages) throws InvalidLogMessageException {
+        if (messages.stream().filter(String::isEmpty).count() > 0) {
+            throw new InvalidLogMessageException("String message should not be null", "");
+        }
+
         List<String> result = new ArrayList<>();
         int counter = 1;
         String previous = messages.get(0);
         for (int i = 1; i < messages.size(); ++i) {
+            if (messages.get(i).isEmpty()) {
+                throw new InvalidLogMessageException("String message should not be null", "");
+            }
             if (Objects.equals(messages.get(i), previous)) {
                 ++counter;
             } else {

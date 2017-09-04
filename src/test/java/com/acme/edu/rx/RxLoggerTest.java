@@ -1,6 +1,8 @@
 package com.acme.edu.rx;
 
+import com.acme.edu.rx.exception.IOLogMessageException;
 import com.acme.edu.rx.formatter.TestLogFormatter;
+import com.acme.edu.rx.saver.LogSaver;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -9,7 +11,6 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.io.PrintStream;
 import java.util.Arrays;
 
 import static org.mockito.Mockito.*;
@@ -21,16 +22,16 @@ public class RxLoggerTest {
     @Spy
     private TestLogFormatter formatter;
     @Mock
-    private PrintStream outputStream;
+    private LogSaver logSaver;
 
     @Before
     public void setUpLogger() {
-        logger = new RxLogger(formatter, outputStream);
+        logger = new RxLogger(formatter, logSaver);
     }
 
     @Test
     @SuppressWarnings("ConstantConditions")
-    public void shouldLogAllTypes() {
+    public void shouldLogAllTypes() throws IOLogMessageException {
         // Given
         Object objectMessage = new Object();
         Boolean booleanMessage = true;
@@ -59,17 +60,17 @@ public class RxLoggerTest {
         verify(formatter).format(stringMessage);
         verify(formatter).format(intArrayMessage);
 
-        verify(outputStream).println(objectMessage.toString());
-        verify(outputStream).println(booleanMessage.toString());
-        verify(outputStream).println(byteMessage.toString());
-        verify(outputStream).println(integerMessage.toString());
-        verify(outputStream).println(charMessage.toString());
-        verify(outputStream).println(stringMessage);
-        verify(outputStream).println(Arrays.toString(intArrayMessage));
+        verify(logSaver).save(objectMessage.toString());
+        verify(logSaver).save(booleanMessage.toString());
+        verify(logSaver).save(byteMessage.toString());
+        verify(logSaver).save(integerMessage.toString());
+        verify(logSaver).save(charMessage.toString());
+        verify(logSaver).save(stringMessage);
+        verify(logSaver).save(Arrays.toString(intArrayMessage));
     }
 
     @Test
-    public void shouldNotAccumulateObjects() {
+    public void shouldNotAccumulateObjects() throws IOLogMessageException {
         // Given
         Object message1 = new Object();
         Object message2 = new Object();
@@ -83,13 +84,13 @@ public class RxLoggerTest {
         verify(formatter).format(message1);
         verify(formatter).format(message2);
 
-        verify(outputStream).println(message1.toString());
-        verify(outputStream).println(message2.toString());
+        verify(logSaver).save(message1.toString());
+        verify(logSaver).save(message2.toString());
     }
 
     @SuppressWarnings("ConstantConditions")
     @Test
-    public void shouldNotAccumulateBooleans() {
+    public void shouldNotAccumulateBooleans() throws IOLogMessageException {
         // Given
         Boolean message1 = true;
         Boolean message2 = false;
@@ -103,12 +104,12 @@ public class RxLoggerTest {
         verify(formatter).format(message1);
         verify(formatter).format(message2);
 
-        verify(outputStream).println(message1.toString());
-        verify(outputStream).println(message2.toString());
+        verify(logSaver).save(message1.toString());
+        verify(logSaver).save(message2.toString());
     }
 
     @Test
-    public void shouldNotAccumulateChars() {
+    public void shouldNotAccumulateChars() throws IOLogMessageException {
         // Given
         Character message1 = 'a';
         Character message2 = 'b';
@@ -122,12 +123,12 @@ public class RxLoggerTest {
         verify(formatter).format(message1);
         verify(formatter).format(message2);
 
-        verify(outputStream).println(message1.toString());
-        verify(outputStream).println(message2.toString());
+        verify(logSaver).save(message1.toString());
+        verify(logSaver).save(message2.toString());
     }
 
     @Test
-    public void shouldNotAccumulateIntegerArrays() {
+    public void shouldNotAccumulateIntegerArrays() throws IOLogMessageException {
         // Given
         int[] message1 = new int[]{1, 2, 3};
         int[] message2 = new int[]{4, 5, 6};
@@ -141,12 +142,12 @@ public class RxLoggerTest {
         verify(formatter).format(message1);
         verify(formatter).format(message2);
 
-        verify(outputStream).println(Arrays.toString(message1));
-        verify(outputStream).println(Arrays.toString(message2));
+        verify(logSaver).save(Arrays.toString(message1));
+        verify(logSaver).save(Arrays.toString(message2));
     }
 
     @Test
-    public void shouldStopByteSumOnOtherMessage() {
+    public void shouldStopByteSumOnOtherMessage() throws IOLogMessageException {
         // Given
         final Object objectMessage = new Object();
 
@@ -162,12 +163,12 @@ public class RxLoggerTest {
         verify(formatter, times(2)).format((byte) 3);
         verify(formatter).format(objectMessage);
 
-        verify(outputStream, times(2)).println("3");
-        verify(outputStream).println(objectMessage.toString());
+        verify(logSaver, times(2)).save("3");
+        verify(logSaver).save(objectMessage.toString());
     }
 
     @Test
-    public void shouldStopIntegerSumOnOtherMessage() {
+    public void shouldStopIntegerSumOnOtherMessage() throws IOLogMessageException {
         // Given
         final Object objectMessage = new Object();
 
@@ -183,12 +184,12 @@ public class RxLoggerTest {
         verify(formatter, times(2)).format(3);
         verify(formatter).format(objectMessage);
 
-        verify(outputStream, times(2)).println("3");
-        verify(outputStream).println(objectMessage.toString());
+        verify(logSaver, times(2)).save("3");
+        verify(logSaver).save(objectMessage.toString());
     }
 
     @Test
-    public void shouldStopStringAccumulationOnOtherMessage() {
+    public void shouldStopStringAccumulationOnOtherMessage() throws IOLogMessageException {
         // Given
         final Object objectMessage = new Object();
 
@@ -204,13 +205,13 @@ public class RxLoggerTest {
         verify(formatter).format(objectMessage);
         verify(formatter).format("finish");
 
-        verify(outputStream).println("start (x2)");
-        verify(outputStream).println(objectMessage.toString());
-        verify(outputStream).println("finish");
+        verify(logSaver).save("start (x2)");
+        verify(logSaver).save(objectMessage.toString());
+        verify(logSaver).save("finish");
     }
 
     @Test
-    public void shouldStopStringAccumulationOnOtherString() {
+    public void shouldStopStringAccumulationOnOtherString() throws IOLogMessageException {
         // Given, when
         logger.log("start");
         logger.log("start");
@@ -223,13 +224,13 @@ public class RxLoggerTest {
         verify(formatter).format("test");
         verify(formatter).format("finish");
 
-        verify(outputStream).println("start (x2)");
-        verify(outputStream).println("test");
-        verify(outputStream).println("finish");
+        verify(logSaver).save("start (x2)");
+        verify(logSaver).save("test");
+        verify(logSaver).save("finish");
     }
 
     @Test
-    public void shouldAccumulateSequelStringMessages() {
+    public void shouldAccumulateSequelStringMessages() throws IOLogMessageException {
         // Given, when
         logger.log("start");
         logger.log("start");
@@ -241,12 +242,12 @@ public class RxLoggerTest {
         verify(formatter).format("start (x2)");
         verify(formatter).format("finish (x2)");
 
-        verify(outputStream).println("start (x2)");
-        verify(outputStream).println("finish (x2)");
+        verify(logSaver).save("start (x2)");
+        verify(logSaver).save("finish (x2)");
     }
 
     @Test
-    public void shouldStopByteSumOnFlush() {
+    public void shouldStopByteSumOnFlush() throws IOLogMessageException {
         // Given, when
         logger.log((byte) 1);
         logger.log((byte) 2);
@@ -258,12 +259,12 @@ public class RxLoggerTest {
         verify(formatter).format((byte) 3);
         verify(formatter).format((byte) 1);
 
-        verify(outputStream).println("3");
-        verify(outputStream).println("1");
+        verify(logSaver).save("3");
+        verify(logSaver).save("1");
     }
 
     @Test
-    public void shouldStopIntegerSumOnFlush() {
+    public void shouldStopIntegerSumOnFlush() throws IOLogMessageException {
         // Given, when
         logger.log(1);
         logger.log(2);
@@ -275,12 +276,12 @@ public class RxLoggerTest {
         verify(formatter).format(3);
         verify(formatter).format(1);
 
-        verify(outputStream).println("3");
-        verify(outputStream).println("1");
+        verify(logSaver).save("3");
+        verify(logSaver).save("1");
     }
 
     @Test
-    public void shouldStopStringAccumulationOnFlush() {
+    public void shouldStopStringAccumulationOnFlush() throws IOLogMessageException {
         // Given, when
         logger.log("start");
         logger.log("start");
@@ -292,8 +293,8 @@ public class RxLoggerTest {
         verify(formatter).format("start (x2)");
         verify(formatter).format("finish");
 
-        verify(outputStream).println("start (x2)");
-        verify(outputStream).println("finish");
+        verify(logSaver).save("start (x2)");
+        verify(logSaver).save("finish");
     }
 
     @Test
