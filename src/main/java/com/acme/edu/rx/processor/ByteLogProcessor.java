@@ -24,12 +24,6 @@ public class ByteLogProcessor {
     }
 
     private static boolean isAdditionSafe(byte sum, byte x) {
-        if (x < 0 && sum < 0 && (byte) (x + sum) >= 0) {
-            return false;
-        }
-        if (x >= 0 && sum >= 0 && (byte) (x + sum) < 0) {
-            return false;
-        }
-        return true;
+        return (x >= 0 || sum >= 0 || (byte) (x + sum) < 0) && (x < 0 || sum < 0 || (byte) (x + sum) >= 0);
     }
 }
