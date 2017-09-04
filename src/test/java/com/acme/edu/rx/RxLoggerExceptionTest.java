@@ -53,7 +53,7 @@ public class RxLoggerExceptionTest {
     @SuppressWarnings("ConstantConditions")
     public void shouldThrowIllegalArgumentException() {
         // Given
-        RxLogger logger = new RxLogger(new TestLogFormatter(), new ConsoleLogSaver());
+        RxLogger logger = new RxLogger(new TestLogFormatter(), new ExceptionTestSaver());
 
         // When, then
         logger.log(null);
