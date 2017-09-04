@@ -19,9 +19,6 @@ public class StringLogProcessor {
         int counter = 1;
         String previous = messages.get(0);
         for (int i = 1; i < messages.size(); ++i) {
-            if (messages.get(i).isEmpty()) {
-                throw new InvalidLogMessageException("String message should not be null", "");
-            }
             if (Objects.equals(messages.get(i), previous)) {
                 ++counter;
             } else {
