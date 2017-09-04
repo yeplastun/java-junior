@@ -6,9 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ByteLogProcessor {
-    private ByteLogProcessor() {
-
-    }
+    private ByteLogProcessor() { }
 
     public static Observable<Byte> process(List<Byte> integers) {
         List<Byte> result = new ArrayList<>();

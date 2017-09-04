@@ -6,9 +6,7 @@ public class LoggerFacade {
 
     private static final RxLogger LOGGER = new RxLogger();
 
-    private LoggerFacade() {
-
-    }
+    private LoggerFacade() { }
 
     public static void log(Object o) {
         LOGGER.log(o);
