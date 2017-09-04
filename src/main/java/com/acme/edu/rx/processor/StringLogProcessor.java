@@ -7,6 +7,10 @@ import java.util.List;
 import java.util.Objects;
 
 public class StringLogProcessor {
+    private StringLogProcessor() {
+
+    }
+
     public static Observable<String> process(List<String> messages) {
         List<String> result = new ArrayList<>();
         int counter = 1;
