@@ -7,6 +7,7 @@ import com.acme.edu.rx.processor.IntegerLogProcessor;
 import com.acme.edu.rx.processor.StringLogProcessor;
 import com.acme.edu.rx.saver.LogSaver;
 import io.reactivex.Observable;
+import io.reactivex.functions.Consumer;
 import io.reactivex.subjects.PublishSubject;
 import org.jetbrains.annotations.NotNull;
 
@@ -15,6 +16,8 @@ import java.util.List;
 
 @SuppressWarnings({"WeakerAccess", "unchecked", "ConstantConditions"})
 public class RxLogger {
+
+    private static final Consumer<Object> NOOP = whatever -> {};
 
     private PublishSubject<Object> stream;
     private PublishSubject<LogMessageException> exceptionStream;
@@ -57,7 +60,7 @@ public class RxLogger {
                 setUpIntArrayProcessing().map(formatter::format)
         ))
                 .doOnNext(saver::save)
-                .subscribe(ignore -> {}, ex -> {
+                .subscribe(NOOP, ex -> {
                     flush();
                     exceptionStream.onNext((LogMessageException) ex);
                 });
