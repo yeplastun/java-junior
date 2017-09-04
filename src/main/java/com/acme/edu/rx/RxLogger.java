@@ -57,7 +57,7 @@ public class RxLogger {
                 setUpIntArrayProcessing().map(formatter::format)
         ))
                 .doOnNext(saver::save)
-                .subscribe(__ -> {}, ex -> {
+                .subscribe(ignore -> {}, ex -> {
                     flush();
                     exceptionStream.onNext((LogMessageException) ex);
                 });
