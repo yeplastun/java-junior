@@ -10,8 +10,23 @@ public class TrivialLogFormatter implements LogFormatter {
     }
 
     @Override
+    public String format(Boolean message) {
+        return "primitive: " + message.toString();
+    }
+
+    @Override
+    public String format(Byte message) {
+        return "primitive: " + message.toString();
+    }
+
+    @Override
     public String format(Integer message) {
         return "primitive: " + message.toString();
+    }
+
+    @Override
+    public String format(Character message) {
+        return "char: " + message.toString();
     }
 
     @Override

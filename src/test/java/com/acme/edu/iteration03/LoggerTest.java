@@ -4,7 +4,6 @@ import com.acme.edu.LoggerFacade;
 import com.acme.edu.SysoutCaptureAndAssertionAbility;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -25,7 +24,6 @@ public class LoggerTest implements SysoutCaptureAndAssertionAbility {
     }
     //endregion
 
-    @Ignore
     @Test
     public void shouldLogIntegersArray() throws IOException {
         //region when
@@ -35,7 +33,7 @@ public class LoggerTest implements SysoutCaptureAndAssertionAbility {
 
         //region then
         assertSysoutEquals(
-                "primitives array: {-1, 0, 1}" + lineSeparator()
+                "primitives array: [-1, 0, 1]" + lineSeparator()
         );
         //endregion
     }
