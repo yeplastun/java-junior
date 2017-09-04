@@ -4,11 +4,11 @@ import com.acme.edu.rx.RxLogger;
 
 public class LoggerFacade {
 
+    private static final RxLogger LOGGER = new RxLogger();
+
     private LoggerFacade() {
 
     }
-
-    private static final RxLogger LOGGER = new RxLogger();
 
     public static void log(Object o) {
         LOGGER.log(o);
