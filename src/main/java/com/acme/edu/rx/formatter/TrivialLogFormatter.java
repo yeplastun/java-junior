@@ -11,17 +11,17 @@ public class TrivialLogFormatter implements LogFormatter {
 
     @Override
     public String format(Boolean message) {
-        return "primitive: " + message.toString();
+        return formatPrimitive(message);
     }
 
     @Override
     public String format(Byte message) {
-        return "primitive: " + message.toString();
+        return formatPrimitive(message);
     }
 
     @Override
     public String format(Integer message) {
-        return "primitive: " + message.toString();
+        return formatPrimitive(message);
     }
 
     @Override
@@ -37,5 +37,9 @@ public class TrivialLogFormatter implements LogFormatter {
     @Override
     public String format(int[] message) {
         return "primitives array: " + Arrays.toString(message);
+    }
+
+    private String formatPrimitive(Object message) {
+        return "primitive: " + message.toString();
     }
 }
