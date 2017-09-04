@@ -338,48 +338,49 @@ public class RxLoggerTest {
         order.verify(formatter).format((byte) -65);
     }
 
+    @Test
     public void shouldLogCorrectlyIntegerOverflowScenarios() {
         //Given
-        int maxPositive = Integer.MAX_VALUE / 2 + 1;
-        int maxNegative = Integer.MIN_VALUE / 2;
+        int bigPositive = Integer.MAX_VALUE / 2 + 1;
+        int bigNegative = Integer.MIN_VALUE / 2;
 
         // When
-        logger.log(maxPositive);
-        logger.log(maxPositive - 1);
+        logger.log(bigPositive);
+        logger.log(bigPositive - 1);
         logger.flush();
-        logger.log(maxPositive);
-        logger.log(maxPositive);
+        logger.log(bigPositive);
+        logger.log(bigPositive);
         logger.flush();
-        logger.log(maxPositive);
-        logger.log(-maxPositive);
+        logger.log(bigPositive);
+        logger.log(-bigPositive);
         logger.flush();
-        logger.log(maxPositive);
-        logger.log(-maxPositive - 1);
+        logger.log(bigPositive);
+        logger.log(-bigPositive - 1);
         logger.flush();
 
-        logger.log(maxNegative);
-        logger.log(maxNegative);
+        logger.log(bigNegative);
+        logger.log(bigNegative);
         logger.flush();
-        logger.log(maxNegative);
-        logger.log(-maxNegative - 1);
+        logger.log(bigNegative);
+        logger.log(-bigNegative - 1);
         logger.flush();
-        logger.log(maxNegative);
-        logger.log(-maxNegative);
+        logger.log(bigNegative);
+        logger.log(-bigNegative);
         logger.flush();
-        logger.log(maxNegative);
-        logger.log(maxNegative - 1);
+        logger.log(bigNegative);
+        logger.log(bigNegative - 1);
         logger.flush();
 
         // Then
         InOrder order = inOrder(formatter);
         order.verify(formatter).format(Integer.MAX_VALUE);
-        order.verify(formatter, times(2)).format(maxPositive);
+        order.verify(formatter, times(2)).format(bigPositive);
         order.verify(formatter).format(0);
         order.verify(formatter).format(-1);
         order.verify(formatter).format(Integer.MIN_VALUE);
         order.verify(formatter).format(-1);
         order.verify(formatter).format(0);
-        order.verify(formatter).format(maxNegative);
-        order.verify(formatter).format(maxNegative - 1);
+        order.verify(formatter).format(bigNegative);
+        order.verify(formatter).format(bigNegative - 1);
     }
 }
