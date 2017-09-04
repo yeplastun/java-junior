@@ -1,7 +1,7 @@
 package com.acme.edu.rx.exception;
 
 public class LogMessageException extends Exception {
-    Object logMessage;
+    final Object logMessage;
 
     LogMessageException(Object logMessage) {
         this.logMessage = logMessage;
@@ -20,9 +20,4 @@ public class LogMessageException extends Exception {
     public Object getLogMessage() {
         return logMessage;
     }
-
-    public void setLogMessage(Object logMessage) {
-        this.logMessage = logMessage;
-    }
-
 }

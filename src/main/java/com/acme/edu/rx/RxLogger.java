@@ -33,7 +33,7 @@ public class RxLogger {
         return exceptionStream;
     }
 
-    public void log(@NotNull Object message) throws IllegalArgumentException {
+    public void log(@NotNull Object message) {
         if (message == null) {
             throw new IllegalArgumentException("Log message shouldn't be null");
         }
