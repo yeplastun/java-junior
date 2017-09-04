@@ -34,6 +34,9 @@ public class RxLogger {
     }
 
     public void log(@NotNull Object message) throws IllegalArgumentException {
+        if (message == null) {
+            throw new IllegalArgumentException("Log message shouldn't be null");
+        }
         stream.onNext(message);
     }
 
