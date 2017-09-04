@@ -1,10 +1,10 @@
 package com.acme.edu.rx;
 
 import com.acme.edu.rx.formatter.TestLogFormatter;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -26,11 +26,6 @@ public class RxLoggerTest {
     @Before
     public void setUpLogger() {
         logger = new RxLogger(formatter, outputStream);
-    }
-
-    @After
-    public void checkNoMoreInteractions() {
-        verifyNoMoreInteractions(formatter, outputStream);
     }
 
     @Test
@@ -302,123 +297,89 @@ public class RxLoggerTest {
     }
 
     @Test
-    public void shouldLogSumOfIntegers() {
+    public void shouldLogCorrectlyByteOverflowScenarios() {
         // Given, when
-        logger.log(1);
-        logger.log(2);
+        logger.log((byte) 64);
+        logger.log((byte) 63);
+        logger.flush();
+        logger.log((byte) 64);
+        logger.log((byte) 64);
+        logger.flush();
+        logger.log((byte) 64);
+        logger.log((byte) -64);
+        logger.flush();
+        logger.log((byte) 64);
+        logger.log((byte) -65);
+
+        logger.flush();
+        logger.log((byte) -64);
+        logger.log((byte) -64);
+        logger.flush();
+        logger.log((byte) -64);
+        logger.log((byte) 63);
+        logger.flush();
+        logger.log((byte) -64);
+        logger.log((byte) 64);
+        logger.flush();
+        logger.log((byte) -64);
+        logger.log((byte) -65);
         logger.flush();
 
         // Then
-        verify(formatter).format(3);
-
-        verify(outputStream).println("3");
+        InOrder order = inOrder(formatter);
+        order.verify(formatter).format((byte) 127);
+        order.verify(formatter, times(2)).format((byte) 64);
+        order.verify(formatter).format((byte) 0);
+        order.verify(formatter).format((byte) -1);
+        order.verify(formatter).format((byte) -128);
+        order.verify(formatter).format((byte) -1);
+        order.verify(formatter).format((byte) 0);
+        order.verify(formatter).format((byte) -64);
+        order.verify(formatter).format((byte) -65);
     }
 
-    @Test
-    public void shouldLogCorrectlyIntegerOverflowWhenSequentIntegers() {
+    public void shouldLogCorrectlyIntegerOverflowScenarios() {
         //Given
-        Integer maxInt = Integer.MAX_VALUE;
+        int maxPositive = Integer.MAX_VALUE / 2 + 1;
+        int maxNegative = Integer.MIN_VALUE / 2;
 
         // When
-        logger.log("str 1");
-        logger.log(10);
-        logger.log(maxInt);
-        logger.log("str 2");
-        logger.log(0);
+        logger.log(maxPositive);
+        logger.log(maxPositive - 1);
+        logger.flush();
+        logger.log(maxPositive);
+        logger.log(maxPositive);
+        logger.flush();
+        logger.log(maxPositive);
+        logger.log(-maxPositive);
+        logger.flush();
+        logger.log(maxPositive);
+        logger.log(-maxPositive - 1);
+        logger.flush();
+
+        logger.log(maxNegative);
+        logger.log(maxNegative);
+        logger.flush();
+        logger.log(maxNegative);
+        logger.log(-maxNegative - 1);
+        logger.flush();
+        logger.log(maxNegative);
+        logger.log(-maxNegative);
+        logger.flush();
+        logger.log(maxNegative);
+        logger.log(maxNegative - 1);
         logger.flush();
 
         // Then
-        verify(formatter).format("str 1");
-        verify(formatter).format(10);
-        verify(formatter).format(maxInt);
-        verify(formatter).format("str 2");
-        verify(formatter).format(0);
-
-        verify(outputStream).println("str 1");
-        verify(outputStream).println("10");
-        verify(outputStream).println(maxInt.toString());
-        verify(outputStream).println("str 2");
-        verify(outputStream).println("0");
-    }
-
-    @Test
-    public void shouldLogCorrectlyIntegerOverflowWhenNegativeSequentIntegers() {
-        //Given
-        Integer negativeMaxInt = -Integer.MAX_VALUE;
-
-        // When
-        logger.log("str 1");
-        logger.log(-10);
-        logger.log(negativeMaxInt);
-        logger.log("str 2");
-        logger.log(0);
-        logger.flush();
-
-        // Then
-        verify(formatter).format("str 1");
-        verify(formatter).format(-10);
-        verify(formatter).format(negativeMaxInt);
-        verify(formatter).format("str 2");
-        verify(formatter).format(0);
-
-        verify(outputStream).println("str 1");
-        verify(outputStream).println("-10");
-        verify(outputStream).println(negativeMaxInt.toString());
-        verify(outputStream).println("str 2");
-        verify(outputStream).println("0");
-    }
-
-    @Test
-    public void shouldLogCorrectlyByteOverflowWhenSequentIntegers() {
-        //Given
-        Byte maxByte = Byte.MAX_VALUE;
-
-        // When
-        logger.log("str 1");
-        logger.log((byte) 10);
-        logger.log(maxByte);
-        logger.log("str 2");
-        logger.log(0);
-        logger.flush();
-
-        // Then
-        verify(formatter).format("str 1");
-        verify(formatter).format((byte) 10);
-        verify(formatter).format(maxByte);
-        verify(formatter).format("str 2");
-        verify(formatter).format(0);
-
-        verify(outputStream).println("str 1");
-        verify(outputStream).println("10");
-        verify(outputStream).println(maxByte.toString());
-        verify(outputStream).println("str 2");
-        verify(outputStream).println("0");
-    }
-
-    @Test
-    public void shouldLogCorrectlyByteOverflowWhenNegativeSequentIntegers() {
-        //Given
-        Byte negativeMaxByte = -Byte.MAX_VALUE;
-
-        // When
-        logger.log("str 1");
-        logger.log((byte) -10);
-        logger.log(negativeMaxByte);
-        logger.log("str 2");
-        logger.log(0);
-        logger.flush();
-
-        // Then
-        verify(formatter).format("str 1");
-        verify(formatter).format((byte) -10);
-        verify(formatter).format(negativeMaxByte);
-        verify(formatter).format("str 2");
-        verify(formatter).format(0);
-
-        verify(outputStream).println("str 1");
-        verify(outputStream).println("-10");
-        verify(outputStream).println(negativeMaxByte.toString());
-        verify(outputStream).println("str 2");
-        verify(outputStream).println("0");
+        InOrder order = inOrder(formatter);
+        order.verify(formatter).format(Integer.MAX_VALUE);
+        order.verify(formatter, times(2)).format(maxPositive);
+        order.verify(formatter).format(0);
+        order.verify(formatter).format(-1);
+        order.verify(formatter).format(Integer.MIN_VALUE);
+        order.verify(formatter).format(-1);
+        order.verify(formatter).format(0);
+        order.verify(formatter).format(maxNegative);
+        order.verify(formatter).format(maxNegative - 1);
     }
 }
