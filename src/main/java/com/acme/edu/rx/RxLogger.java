@@ -1,7 +1,6 @@
 package com.acme.edu.rx;
 
 import com.acme.edu.rx.formatter.LogFormatter;
-import com.acme.edu.rx.formatter.TrivialLogFormatter;
 import com.acme.edu.rx.processor.ByteLogProcessor;
 import com.acme.edu.rx.processor.IntegerLogProcessor;
 import com.acme.edu.rx.processor.StringLogProcessor;
@@ -18,13 +17,6 @@ public class RxLogger {
     private PublishSubject<Object> stream;
     private LogFormatter formatter;
     private PrintStream outputStream;
-
-    public RxLogger() {
-        stream = PublishSubject.create();
-        formatter = new TrivialLogFormatter();
-        this.outputStream = System.out;
-        setUpStreamProcessing();
-    }
 
     public RxLogger(LogFormatter formatter, PrintStream outputStream) {
         stream = PublishSubject.create();
