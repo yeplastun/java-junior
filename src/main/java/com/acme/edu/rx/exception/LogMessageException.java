@@ -13,7 +13,7 @@ public class LogMessageException extends Exception {
         this.logMessage = logMessage;
     }
 
-    public Object getLogMessage() {
+    public String getLogMessage() {
         return logMessage;
     }
 }

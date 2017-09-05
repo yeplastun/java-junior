@@ -6,6 +6,7 @@ import com.acme.edu.rx.formatter.LogFormatter;
 import com.acme.edu.rx.processor.ByteLogProcessor;
 import com.acme.edu.rx.processor.IntegerLogProcessor;
 import com.acme.edu.rx.processor.StringLogProcessor;
+import com.acme.edu.rx.response.LogResponse;
 import com.acme.edu.rx.saver.LogSaver;
 import io.reactivex.Observable;
 import io.reactivex.functions.Consumer;
@@ -21,10 +22,8 @@ import java.util.List;
 @SuppressWarnings({"WeakerAccess", "unchecked", "ConstantConditions"})
 public class RxLogger {
 
-    private static final Consumer<String> NOOP = o -> {};
-
     private PublishSubject<Object> stream;
-    private PublishSubject<LogMessageException> exceptionStream;
+    private PublishSubject<LogResponse> responseStream;
     private LogFormatter formatter;
     private LogSaver saver;
 
@@ -33,11 +32,11 @@ public class RxLogger {
      *
      * @param formatter Implementation of <b>LogFormatter</b> that provides format function for log message.
      * @param saver     Implementation of <b>LogSaver</b> that provides api for saving log message anywhere you want.
-     * @apiNote After creating new instance it's necessary to subscribe to exceptions stream using {@link #getExceptionStream()}.
+     * @apiNote After creating new instance it's necessary to subscribe to exceptions stream using {@link #getResponseStream()}.
      */
     public RxLogger(LogFormatter formatter, LogSaver saver) {
         stream = PublishSubject.create();
-        exceptionStream = PublishSubject.create();
+        responseStream = PublishSubject.create();
         this.formatter = formatter;
         this.saver = saver;
         setUpStreamProcessing();
@@ -50,15 +49,15 @@ public class RxLogger {
      * @return {@link Observable} exception stream.
      * To get exception use method {@link Observable#subscribe(Consumer)}.
      */
-    public Observable<LogMessageException> getExceptionStream() {
-        return exceptionStream;
+    public Observable<LogResponse> getResponseStream() {
+        return responseStream;
     }
 
     /**
      * <b>Asynchronously</b> logs current message formatted by <b>LogFormatter</b>
      * implementation via <b>LogSaver</b> implementation.
      * <p>
-     * To get exception stream use {@link #getExceptionStream()}.
+     * To get exception stream use {@link #getResponseStream()}.
      * To force output use {@link #flush()}.
      * </p>
      *
@@ -92,9 +91,11 @@ public class RxLogger {
             setUpIntArrayProcessing().map(formatter::format)
         ))
             .doOnNext(saver::save)
-            .subscribe(NOOP, ex -> {
-                flush();
-                exceptionStream.onNext((LogMessageException) ex);
+            .subscribe(
+                logMessage -> responseStream.onNext(new LogResponse(logMessage)),
+                ex -> {
+                    flush();
+                    responseStream.onNext(new LogResponse(ex));
             });
     }
 
