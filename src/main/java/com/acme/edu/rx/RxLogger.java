@@ -1,7 +1,7 @@
 package com.acme.edu.rx;
 
 import com.acme.edu.rx.exception.InvalidLogMessageException;
-import com.acme.edu.rx.exception.LogMessageException;
+import com.acme.edu.rx.exception.LoggingException;
 import com.acme.edu.rx.formatter.LogFormatter;
 import com.acme.edu.rx.processor.ByteLogProcessor;
 import com.acme.edu.rx.processor.IntegerLogProcessor;
@@ -44,7 +44,7 @@ public class RxLogger {
 
     /**
      * Provides separate stream of logging exceptions. All exceptions are instances or inherited
-     * from {@link LogMessageException}.
+     * from {@link LoggingException}.
      *
      * @return {@link Observable} exception stream.
      * To get exception use method {@link Observable#subscribe(Consumer)}.

@@ -1,13 +1,13 @@
 package com.acme.edu.rx.response;
 
-import com.acme.edu.rx.exception.LogMessageException;
+import com.acme.edu.rx.exception.LoggingException;
 
 public class LogResponse {
     private final String logMessage;
-    private final LogMessageException exception;
+    private final LoggingException exception;
 
     public LogResponse(Throwable exception) {
-        LogMessageException castedException = (LogMessageException) exception;
+        LoggingException castedException = (LoggingException) exception;
         this.logMessage = (castedException).getLogMessage();
         this.exception = castedException;
     }
@@ -25,7 +25,7 @@ public class LogResponse {
         return logMessage;
     }
 
-    public LogMessageException getException() {
+    public LoggingException getException() {
         return exception;
     }
 }

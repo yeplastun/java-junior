@@ -1,6 +1,6 @@
 package com.acme.edu.rx;
 
-import com.acme.edu.rx.exception.LogMessageException;
+import com.acme.edu.rx.exception.LoggingException;
 import com.acme.edu.rx.formatter.TestLogFormatter;
 import com.acme.edu.rx.saver.LogSaver;
 import org.junit.Before;
@@ -31,7 +31,7 @@ public class RxLoggerTest {
 
     @Test
     @SuppressWarnings("ConstantConditions")
-    public void shouldLogAllTypes() throws LogMessageException {
+    public void shouldLogAllTypes() throws LoggingException {
         // Given
         Object objectMessage = new Object();
         Boolean booleanMessage = true;
@@ -70,7 +70,7 @@ public class RxLoggerTest {
     }
 
     @Test
-    public void shouldNotAccumulateObjects() throws LogMessageException {
+    public void shouldNotAccumulateObjects() throws LoggingException {
         // Given
         Object message1 = new Object();
         Object message2 = new Object();
@@ -90,7 +90,7 @@ public class RxLoggerTest {
 
     @SuppressWarnings("ConstantConditions")
     @Test
-    public void shouldNotAccumulateBooleans() throws LogMessageException {
+    public void shouldNotAccumulateBooleans() throws LoggingException {
         // Given
         Boolean message1 = true;
         Boolean message2 = false;
@@ -109,7 +109,7 @@ public class RxLoggerTest {
     }
 
     @Test
-    public void shouldNotAccumulateChars() throws LogMessageException {
+    public void shouldNotAccumulateChars() throws LoggingException {
         // Given
         Character message1 = 'a';
         Character message2 = 'b';
@@ -128,7 +128,7 @@ public class RxLoggerTest {
     }
 
     @Test
-    public void shouldNotAccumulateIntegerArrays() throws LogMessageException {
+    public void shouldNotAccumulateIntegerArrays() throws LoggingException {
         // Given
         int[] message1 = new int[]{1, 2, 3};
         int[] message2 = new int[]{4, 5, 6};
@@ -147,7 +147,7 @@ public class RxLoggerTest {
     }
 
     @Test
-    public void shouldStopByteSumOnOtherMessage() throws LogMessageException {
+    public void shouldStopByteSumOnOtherMessage() throws LoggingException {
         // Given
         final Object objectMessage = new Object();
 
@@ -168,7 +168,7 @@ public class RxLoggerTest {
     }
 
     @Test
-    public void shouldStopIntegerSumOnOtherMessage() throws LogMessageException {
+    public void shouldStopIntegerSumOnOtherMessage() throws LoggingException {
         // Given
         final Object objectMessage = new Object();
 
@@ -189,7 +189,7 @@ public class RxLoggerTest {
     }
 
     @Test
-    public void shouldStopStringAccumulationOnOtherMessage() throws LogMessageException {
+    public void shouldStopStringAccumulationOnOtherMessage() throws LoggingException {
         // Given
         final Object objectMessage = new Object();
 
@@ -211,7 +211,7 @@ public class RxLoggerTest {
     }
 
     @Test
-    public void shouldStopStringAccumulationOnOtherString() throws LogMessageException {
+    public void shouldStopStringAccumulationOnOtherString() throws LoggingException {
         // Given, when
         logger.log("start");
         logger.log("start");
@@ -230,7 +230,7 @@ public class RxLoggerTest {
     }
 
     @Test
-    public void shouldAccumulateSequelStringMessages() throws LogMessageException {
+    public void shouldAccumulateSequelStringMessages() throws LoggingException {
         // Given, when
         logger.log("start");
         logger.log("start");
@@ -247,7 +247,7 @@ public class RxLoggerTest {
     }
 
     @Test
-    public void shouldStopByteSumOnFlush() throws LogMessageException {
+    public void shouldStopByteSumOnFlush() throws LoggingException {
         // Given, when
         logger.log((byte) 1);
         logger.log((byte) 2);
@@ -264,7 +264,7 @@ public class RxLoggerTest {
     }
 
     @Test
-    public void shouldStopIntegerSumOnFlush() throws LogMessageException {
+    public void shouldStopIntegerSumOnFlush() throws LoggingException {
         // Given, when
         logger.log(1);
         logger.log(2);
@@ -281,7 +281,7 @@ public class RxLoggerTest {
     }
 
     @Test
-    public void shouldStopStringAccumulationOnFlush() throws LogMessageException {
+    public void shouldStopStringAccumulationOnFlush() throws LoggingException {
         // Given, when
         logger.log("start");
         logger.log("start");
@@ -298,7 +298,7 @@ public class RxLoggerTest {
     }
 
     @Test
-    public void shouldLogCorrectlyByteOverflowScenarios() throws LogMessageException {
+    public void shouldLogCorrectlyByteOverflowScenarios() throws LoggingException {
         // Given, when
         logger.log((byte) 64);
         logger.log((byte) 63);
@@ -340,7 +340,7 @@ public class RxLoggerTest {
     }
 
     @Test
-    public void shouldLogCorrectlyIntegerOverflowScenarios() throws LogMessageException {
+    public void shouldLogCorrectlyIntegerOverflowScenarios() throws LoggingException {
         //Given
         int bigPositive = Integer.MAX_VALUE / 2 + 1;
         int bigNegative = Integer.MIN_VALUE / 2;
