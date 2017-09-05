@@ -20,21 +20,16 @@ public class IntegerLogProcessor {
      */
     public static Observable<Integer> process(List<Integer> integers) {
         List<Integer> result = new ArrayList<>();
-        int sum = 0;
-        for (int x : integers) {
-            if (!Utils.isAdditionSafe(sum, x)) {
-                result.add(sum);
-                sum = 0;
+        result.add(0);
+        integers.forEach(x -> {
+            int index = result.size() - 1;
+            int value = result.get(index);
+            if (Utils.isAdditionSafe(value, x)) {
+                result.set(index, (value + x));
+            } else {
+                result.add(x);
             }
-            sum += x;
-        }
-        result.add(sum);
+        });
         return Observable.fromIterable(result);
     }
-
-//    private static boolean isAdditionSafe(int sum, int x) {
-//        final boolean positiveOverflow = x >= 0 || sum >= 0 || x + sum < 0;
-//        final boolean negativeOverflow = x < 0 || sum < 0 || x + sum >= 0;
-//        return positiveOverflow && negativeOverflow;
-//    }
 }
