@@ -24,10 +24,9 @@ public class ByteLogProcessor {
         for (byte x : bytes) {
             if (!isAdditionSafe(sum, x)) {
                 result.add(sum);
-                sum = x;
-            } else {
-                sum += x;
+                sum = 0;
             }
+            sum += x;
         }
         result.add(sum);
         return Observable.fromIterable(result);
