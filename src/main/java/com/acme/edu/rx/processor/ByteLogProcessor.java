@@ -5,14 +5,22 @@ import io.reactivex.Observable;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Provides business logic of processing for instances of {@link Byte}.
+ */
 public class ByteLogProcessor {
     private ByteLogProcessor() {
     }
 
-    public static Observable<Byte> process(List<Byte> integers) {
+    /**
+     * Applies business logic for List of bytes checking the overflow.
+     * @param bytes Collection of sequential bytes to process before logging.
+     * @return Stream prepared for formatting.
+     */
+    public static Observable<Byte> process(List<Byte> bytes) {
         List<Byte> result = new ArrayList<>();
         byte sum = 0;
-        for (byte x : integers) {
+        for (byte x : bytes) {
             if (!isAdditionSafe(sum, x)) {
                 result.add(sum);
                 sum = x;
