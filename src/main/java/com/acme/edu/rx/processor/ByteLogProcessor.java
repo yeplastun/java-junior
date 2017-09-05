@@ -21,13 +21,15 @@ public class ByteLogProcessor {
     public static Observable<Byte> process(List<Byte> bytes) {
         List<Byte> result = new ArrayList<>();
         result.add((byte) 0);
-        for (byte x : bytes) {
-            if (isAdditionSafe(result.get(result.size() - 1), x)) {
-                result.set(result.size() - 1, (byte) (result.get(result.size() - 1) + x));
+        bytes.forEach(x -> {
+            int index = result.size() - 1;
+            byte value = result.get(index);
+            if (isAdditionSafe(value, x)) {
+                result.set(index, (byte) (value + x));
             } else {
                 result.add(x);
             }
-        }
+        });
         return Observable.fromIterable(result);
     }
 
