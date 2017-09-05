@@ -120,24 +120,31 @@ public class RxLoggerResponseTest {
         // Then
         responseSubscriber.assertValueAt(0, response ->
             Objects.equals(response.getLogMessage(), objectMessage.toString())
+                && response.isSuccessful()
         );
         responseSubscriber.assertValueAt(1, response ->
             Objects.equals(response.getLogMessage(), booleanMessage.toString())
+                && response.isSuccessful()
         );
         responseSubscriber.assertValueAt(2, response ->
             Objects.equals(response.getLogMessage(), byteMessage.toString())
+                && response.isSuccessful()
         );
         responseSubscriber.assertValueAt(3, response ->
             Objects.equals(response.getLogMessage(), integerMessage.toString())
+                && response.isSuccessful()
         );
         responseSubscriber.assertValueAt(4, response ->
             Objects.equals(response.getLogMessage(), charMessage.toString())
+                && response.isSuccessful()
         );
         responseSubscriber.assertValueAt(5, response ->
             Objects.equals(response.getLogMessage(), stringMessage)
+                && response.isSuccessful()
         );
         responseSubscriber.assertValueAt(6, response ->
             Objects.equals(response.getLogMessage(), Arrays.toString(intArrayMessage))
+                && response.isSuccessful()
         );
 
     }
