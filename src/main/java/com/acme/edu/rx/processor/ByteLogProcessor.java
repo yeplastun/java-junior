@@ -20,15 +20,14 @@ public class ByteLogProcessor {
      */
     public static Observable<Byte> process(List<Byte> bytes) {
         List<Byte> result = new ArrayList<>();
-        byte sum = 0;
+        result.add((byte) 0);
         for (byte x : bytes) {
-            if (!isAdditionSafe(sum, x)) {
-                result.add(sum);
-                sum = 0;
+            if (isAdditionSafe(result.get(result.size() - 1), x)) {
+                result.set(result.size() - 1, (byte) (result.get(result.size() - 1) + x));
+            } else {
+                result.add(x);
             }
-            sum += x;
         }
-        result.add(sum);
         return Observable.fromIterable(result);
     }
 
