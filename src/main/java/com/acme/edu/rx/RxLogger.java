@@ -22,10 +22,8 @@ import java.util.List;
 public class RxLogger {
 
     @SuppressWarnings("UnnecessaryReturnStatement")
-    private static final Consumer<Object> NOOP = new Consumer<Object>() {
-        @Override
-        public void accept(Object o) throws Exception {
-        }
+    private static final Consumer<Object> NOOP = o -> {
+        throw new UnsupportedOperationException();
     };
 
     private PublishSubject<Object> stream;
@@ -97,6 +95,7 @@ public class RxLogger {
             setUpIntArrayProcessing().map(formatter::format)
         ))
             .doOnNext(saver::save)
+                .filter(s -> false)
             .subscribe(NOOP, ex -> {
                 flush();
                 exceptionStream.onNext((LogMessageException) ex);
