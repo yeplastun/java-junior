@@ -22,7 +22,7 @@ public class IntegerLogProcessor {
         List<Integer> result = new ArrayList<>();
         int sum = 0;
         for (int x : integers) {
-            if (!isAdditionSafe(sum, x)) {
+            if (!Utils.isAdditionSafe(sum, x)) {
                 result.add(sum);
                 sum = 0;
             }
@@ -32,9 +32,9 @@ public class IntegerLogProcessor {
         return Observable.fromIterable(result);
     }
 
-    private static boolean isAdditionSafe(int sum, int x) {
-        final boolean positiveOverflow = x >= 0 || sum >= 0 || x + sum < 0;
-        final boolean negativeOverflow = x < 0 || sum < 0 || x + sum >= 0;
-        return positiveOverflow && negativeOverflow;
-    }
+//    private static boolean isAdditionSafe(int sum, int x) {
+//        final boolean positiveOverflow = x >= 0 || sum >= 0 || x + sum < 0;
+//        final boolean negativeOverflow = x < 0 || sum < 0 || x + sum >= 0;
+//        return positiveOverflow && negativeOverflow;
+//    }
 }

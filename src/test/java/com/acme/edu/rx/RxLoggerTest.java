@@ -311,8 +311,8 @@ public class RxLoggerTest {
         logger.flush();
         logger.log((byte) 64);
         logger.log((byte) -65);
-
         logger.flush();
+
         logger.log((byte) -64);
         logger.log((byte) -64);
         logger.flush();
