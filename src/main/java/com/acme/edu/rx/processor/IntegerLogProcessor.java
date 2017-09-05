@@ -21,24 +21,24 @@ public class IntegerLogProcessor {
     public static Observable<Integer> process(List<Integer> integers) {
         List<Integer> result = new ArrayList<>();
         int sum = 0;
-        for (int x : integers) {
-            if (!isAdditionSafe(sum, x)) {
-                result.add(sum);
-                sum = 0;
-            }
-            sum += x;
-        }
+//        for (int x : integers) {
+//            if (!isAdditionSafe(sum, x)) {
+//                result.add(sum);
+//                sum = 0;
+//            }
+//            sum += x;
+//        }
         result.add(sum);
         return Observable.fromIterable(result);
     }
 
     private static boolean isAdditionSafe(int sum, int x) {
-        boolean positiveOverflow = x >= 0;
-        positiveOverflow = positiveOverflow || sum >= 0;
-        positiveOverflow  = positiveOverflow || x + sum < 0;
-        boolean negativeOverflow = x < 0;
-        negativeOverflow = negativeOverflow || sum < 0;
-        negativeOverflow = negativeOverflow || x + sum >= 0;
-        return positiveOverflow && negativeOverflow;
+//        boolean positiveOverflow = x >= 0;
+//        positiveOverflow = positiveOverflow || sum >= 0;
+//        positiveOverflow  = positiveOverflow || x + sum < 0;
+//        boolean negativeOverflow = x < 0;
+//        negativeOverflow = negativeOverflow || sum < 0;
+//        negativeOverflow = negativeOverflow || x + sum >= 0;
+        return true;
     }
 }
