@@ -40,15 +40,14 @@ public class StringLogProcessor {
             } else {
                 counters.add(1);
                 messages.add(current);
-                result.add(buildString(previous, counter));
             }
         });
-        result.add(buildString(messages.get(messages.size() - 1), counters.get(counters.size() - 1)));
+
+        IntStream.range(0, counters.size()).forEach(i -> {
+            int counter = counters.get(i);
+            result.add(messages.get(i) + (counter == 1 ? "" : String.format(" (x%d)", counter)));
+        });
 
         return Observable.fromIterable(result);
-    }
-
-    private static String buildString(String message, int counter) {
-        return message + (counter == 1 ? "" : String.format(" (x%d)", counter));
     }
 }
