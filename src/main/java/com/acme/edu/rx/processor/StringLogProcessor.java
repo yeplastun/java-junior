@@ -40,10 +40,10 @@ public class StringLogProcessor {
             } else {
                 counters.add(1);
                 messages.add(current);
+                result.add(buildString(previous, counter));
             }
         });
-
-        IntStream.range(0, counters.size()).forEach(i -> result.add(buildString(messages.get(i), counters.get(i))));
+        result.add(buildString(messages.get(messages.size() - 1), counters.get(counters.size() - 1)));
 
         return Observable.fromIterable(result);
     }
