@@ -15,6 +15,9 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Asynchronous logger with embedded business logic.
+ */
 @SuppressWarnings({"WeakerAccess", "unchecked", "ConstantConditions"})
 public class RxLogger {
 
@@ -27,7 +30,7 @@ public class RxLogger {
     private LogSaver saver;
 
     /**
-     * Asynchronous logger with embedded business logic.
+     * Public constructor for RxLogger.
      *
      * @param formatter Implementation of <b>LogFormatter</b> that provides format function for log message.
      * @param saver     Implementation of <b>LogSaver</b> that provides api for saving log message anywhere you want.
@@ -81,61 +84,61 @@ public class RxLogger {
 
     private void setUpStreamProcessing() {
         Observable.merge(Arrays.asList(
-            setUpObjectProcessing().map(formatter::format),
-            setUpBooleanProcessing().map(formatter::format),
-            setUpByteProcessing().map(formatter::format),
-            setUpIntegerProcessing().map(formatter::format),
-            setUpCharProcessing().map(formatter::format),
-            setUpStringProcessing().map(formatter::format),
-            setUpIntArrayProcessing().map(formatter::format)
+                setUpObjectProcessing().map(formatter::format),
+                setUpBooleanProcessing().map(formatter::format),
+                setUpByteProcessing().map(formatter::format),
+                setUpIntegerProcessing().map(formatter::format),
+                setUpCharProcessing().map(formatter::format),
+                setUpStringProcessing().map(formatter::format),
+                setUpIntArrayProcessing().map(formatter::format)
         ))
-            .doOnNext(saver::save)
-            .subscribe(NOOP, ex -> {
-                flush();
-                exceptionStream.onNext((LogMessageException) ex);
-            });
+                .doOnNext(saver::save)
+                .subscribe(NOOP, ex -> {
+                    flush();
+                    exceptionStream.onNext((LogMessageException) ex);
+                });
     }
 
     private Observable<Object> setUpObjectProcessing() {
         return getTypeStream(Object.class)
-            .flatMap(Observable::fromIterable);
+                .flatMap(Observable::fromIterable);
     }
 
     private Observable<Boolean> setUpBooleanProcessing() {
         return getTypeStream(Boolean.class)
-            .flatMap(Observable::fromIterable);
+                .flatMap(Observable::fromIterable);
     }
 
     private Observable<Byte> setUpByteProcessing() {
         return getTypeStream(Byte.class)
-            .flatMap(ByteLogProcessor::process);
+                .flatMap(ByteLogProcessor::process);
     }
 
     private Observable<Integer> setUpIntegerProcessing() {
         return getTypeStream(Integer.class)
-            .flatMap(IntegerLogProcessor::process);
+                .flatMap(IntegerLogProcessor::process);
     }
 
     private Observable<Character> setUpCharProcessing() {
         return getTypeStream(Character.class)
-            .flatMap(Observable::fromIterable);
+                .flatMap(Observable::fromIterable);
     }
 
     private Observable<String> setUpStringProcessing() {
         return getTypeStream(String.class)
-            .flatMap(StringLogProcessor::process);
+                .flatMap(StringLogProcessor::process);
     }
 
     private Observable<int[]> setUpIntArrayProcessing() {
         return getTypeStream(int[].class)
-            .flatMap(Observable::fromIterable);
+                .flatMap(Observable::fromIterable);
     }
 
     private <T> Observable<List<T>> getTypeStream(Class<T> clazz) {
         return stream
-            .ofType(clazz)
-            .filter(m -> m.getClass() == clazz)
-            .buffer(stream.map(Object::getClass).distinctUntilChanged())
-            .filter(l -> !l.isEmpty());
+                .ofType(clazz)
+                .filter(m -> m.getClass() == clazz)
+                .buffer(stream.map(Object::getClass).distinctUntilChanged())
+                .filter(l -> !l.isEmpty());
     }
 }
