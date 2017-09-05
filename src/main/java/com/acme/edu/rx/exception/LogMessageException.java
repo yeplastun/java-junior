@@ -1,18 +1,18 @@
 package com.acme.edu.rx.exception;
 
 public class LogMessageException extends Exception {
-    final Object logMessage;
+    private final String logMessage;
 
-    LogMessageException(Object logMessage) {
+    LogMessageException(String logMessage) {
         this.logMessage = logMessage;
     }
 
-    LogMessageException(String message, Object logMessage) {
+    LogMessageException(String message, String logMessage) {
         super(message);
         this.logMessage = logMessage;
     }
 
-    LogMessageException(String message, Throwable cause, Object logMessage) {
+    LogMessageException(String message, Throwable cause, String logMessage) {
         super(message, cause);
         this.logMessage = logMessage;
     }

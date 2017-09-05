@@ -1,15 +1,15 @@
 package com.acme.edu.rx.exception;
 
 public class IOLogMessageException extends LogMessageException {
-    public IOLogMessageException(Object logMessage) {
+    public IOLogMessageException(String logMessage) {
         super(logMessage);
     }
 
-    public IOLogMessageException(String message, Object logMessage) {
+    public IOLogMessageException(String message, String logMessage) {
         super(message, logMessage);
     }
 
-    public IOLogMessageException(String message, Throwable cause, Object logMessage) {
+    public IOLogMessageException(String message, Throwable cause, String logMessage) {
         super(message, cause, logMessage);
     }
 }
