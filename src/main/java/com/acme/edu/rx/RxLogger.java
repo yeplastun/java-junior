@@ -19,7 +19,7 @@ import java.util.List;
 public class RxLogger {
 
     @SuppressWarnings("UnnecessaryReturnStatement")
-    private static final Consumer<Object> NOOP = whatever -> { return; };
+    private static final Consumer<Object> NOOP = o -> { };
 
     private PublishSubject<Object> stream;
     private PublishSubject<LogMessageException> exceptionStream;
