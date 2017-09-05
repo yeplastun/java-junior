@@ -6,7 +6,7 @@ import java.io.IOException;
 
 public class ExceptionTestSaver implements LogSaver {
     private static IOLogMessageException IOEXCEPTION =
-            new IOLogMessageException("test exception", new IOException(), "test log message");
+        new IOLogMessageException("test exception", new IOException(), "test log message");
 
     public static IOLogMessageException getInstance() {
         return IOEXCEPTION;

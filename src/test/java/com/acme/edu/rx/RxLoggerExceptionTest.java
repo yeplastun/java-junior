@@ -21,7 +21,7 @@ public class RxLoggerExceptionTest {
     }
 
     @Test
-    public void shouldThrowIOLogMessageException() {
+    public void shouldThrowIOLogMessageException() throws InvalidLogMessageException {
         // Given
         RxLogger logger = new RxLogger(new TestLogFormatter(), new ExceptionTestSaver());
         logger.getExceptionStream().subscribe(exceptionObserver);
@@ -35,7 +35,7 @@ public class RxLoggerExceptionTest {
     }
 
     @Test
-    public void shouldThrowInvalidLogMessageException() {
+    public void shouldThrowInvalidLogMessageException() throws InvalidLogMessageException {
         // Given
         RxLogger logger = new RxLogger(new TestLogFormatter(), new ConsoleLogSaver());
         logger.getExceptionStream().subscribe(exceptionObserver);
@@ -46,12 +46,12 @@ public class RxLoggerExceptionTest {
 
         // Then
         exceptionObserver.assertValue(ex -> ex.getClass() == InvalidLogMessageException.class
-                && Objects.equals(ex.getLogMessage(), ""));
+            && Objects.equals(ex.getLogMessage(), ""));
     }
 
     @Test(expected = IllegalArgumentException.class)
     @SuppressWarnings("ConstantConditions")
-    public void shouldThrowIllegalArgumentException() {
+    public void shouldThrowIllegalArgumentException() throws InvalidLogMessageException {
         // Given
         RxLogger logger = new RxLogger(new TestLogFormatter(), new ExceptionTestSaver());
 
@@ -60,7 +60,7 @@ public class RxLoggerExceptionTest {
     }
 
     @Test
-    public void shouldTrowSeveralExceptions() {
+    public void shouldTrowSeveralExceptions() throws InvalidLogMessageException {
         // Given
         RxLogger logger = new RxLogger(new TestLogFormatter(), new ExceptionTestSaver());
         logger.getExceptionStream().subscribe(exceptionObserver);

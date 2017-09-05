@@ -1,5 +1,6 @@
 package com.acme.edu.rx;
 
+import com.acme.edu.rx.exception.InvalidLogMessageException;
 import com.acme.edu.rx.exception.LogMessageException;
 import com.acme.edu.rx.formatter.LogFormatter;
 import com.acme.edu.rx.processor.ByteLogProcessor;
@@ -17,7 +18,8 @@ import java.util.List;
 @SuppressWarnings({"WeakerAccess", "unchecked", "ConstantConditions"})
 public class RxLogger {
 
-    private static final Consumer<Object> NOOP = whatever -> {};
+    @SuppressWarnings("UnnecessaryReturnStatement")
+    private static final Consumer<Object> NOOP = whatever -> { return; };
 
     private PublishSubject<Object> stream;
     private PublishSubject<LogMessageException> exceptionStream;
@@ -36,9 +38,9 @@ public class RxLogger {
         return exceptionStream;
     }
 
-    public void log(@NotNull Object message) {
+    public void log(@NotNull Object message) throws InvalidLogMessageException {
         if (message == null) {
-            throw new IllegalArgumentException("Log message shouldn't be null");
+            throw new InvalidLogMessageException("Log message shouldn't be null", null);
         }
         stream.onNext(message);
     }
@@ -51,61 +53,61 @@ public class RxLogger {
 
     private void setUpStreamProcessing() {
         Observable.merge(Arrays.asList(
-                setUpObjectProcessing().map(formatter::format),
-                setUpBooleanProcessing().map(formatter::format),
-                setUpByteProcessing().map(formatter::format),
-                setUpIntegerProcessing().map(formatter::format),
-                setUpCharProcessing().map(formatter::format),
-                setUpStringProcessing().map(formatter::format),
-                setUpIntArrayProcessing().map(formatter::format)
+            setUpObjectProcessing().map(formatter::format),
+            setUpBooleanProcessing().map(formatter::format),
+            setUpByteProcessing().map(formatter::format),
+            setUpIntegerProcessing().map(formatter::format),
+            setUpCharProcessing().map(formatter::format),
+            setUpStringProcessing().map(formatter::format),
+            setUpIntArrayProcessing().map(formatter::format)
         ))
-                .doOnNext(saver::save)
-                .subscribe(NOOP, ex -> {
-                    flush();
-                    exceptionStream.onNext((LogMessageException) ex);
-                });
+            .doOnNext(saver::save)
+            .subscribe(NOOP, ex -> {
+                flush();
+                exceptionStream.onNext((LogMessageException) ex);
+            });
     }
 
     private Observable<Object> setUpObjectProcessing() {
         return getTypeStream(Object.class)
-                .flatMap(Observable::fromIterable);
+            .flatMap(Observable::fromIterable);
     }
 
     private Observable<Boolean> setUpBooleanProcessing() {
         return getTypeStream(Boolean.class)
-                .flatMap(Observable::fromIterable);
+            .flatMap(Observable::fromIterable);
     }
 
     private Observable<Byte> setUpByteProcessing() {
         return getTypeStream(Byte.class)
-                .flatMap(ByteLogProcessor::process);
+            .flatMap(ByteLogProcessor::process);
     }
 
     private Observable<Integer> setUpIntegerProcessing() {
         return getTypeStream(Integer.class)
-                .flatMap(IntegerLogProcessor::process);
+            .flatMap(IntegerLogProcessor::process);
     }
 
     private Observable<Character> setUpCharProcessing() {
         return getTypeStream(Character.class)
-                .flatMap(Observable::fromIterable);
+            .flatMap(Observable::fromIterable);
     }
 
     private Observable<String> setUpStringProcessing() {
         return getTypeStream(String.class)
-                .flatMap(StringLogProcessor::process);
+            .flatMap(StringLogProcessor::process);
     }
 
     private Observable<int[]> setUpIntArrayProcessing() {
         return getTypeStream(int[].class)
-                .flatMap(Observable::fromIterable);
+            .flatMap(Observable::fromIterable);
     }
 
     private <T> Observable<List<T>> getTypeStream(Class<T> clazz) {
         return stream
-                .ofType(clazz)
-                .filter(m -> m.getClass() == clazz)
-                .buffer(stream.map(Object::getClass).distinctUntilChanged())
-                .filter(l -> !l.isEmpty());
+            .ofType(clazz)
+            .filter(m -> m.getClass() == clazz)
+            .buffer(stream.map(Object::getClass).distinctUntilChanged())
+            .filter(l -> !l.isEmpty());
     }
 }

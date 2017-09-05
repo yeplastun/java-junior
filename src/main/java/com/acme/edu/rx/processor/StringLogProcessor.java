@@ -8,7 +8,8 @@ import java.util.List;
 import java.util.Objects;
 
 public class StringLogProcessor {
-    private StringLogProcessor() { }
+    private StringLogProcessor() {
+    }
 
     public static Observable<String> process(List<String> messages) throws InvalidLogMessageException {
         if (messages.stream().filter(String::isEmpty).count() > 0) {
