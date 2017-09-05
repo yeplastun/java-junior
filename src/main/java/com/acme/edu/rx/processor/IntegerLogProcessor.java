@@ -24,18 +24,21 @@ public class IntegerLogProcessor {
         for (int x : integers) {
             if (!isAdditionSafe(sum, x)) {
                 result.add(sum);
-                sum = x;
-            } else {
-                sum += x;
+                sum = 0;
             }
+            sum += x;
         }
         result.add(sum);
         return Observable.fromIterable(result);
     }
 
     private static boolean isAdditionSafe(int sum, int x) {
-        final boolean positiveOverflow = x >= 0 || sum >= 0 || x + sum < 0;
-        final boolean negativeOverflow = x < 0 || sum < 0 || x + sum >= 0;
+        boolean positiveOverflow = x >= 0;
+        positiveOverflow = positiveOverflow || sum >= 0;
+        positiveOverflow  = positiveOverflow || x + sum < 0;
+        boolean negativeOverflow = x < 0;
+        negativeOverflow = negativeOverflow || sum < 0;
+        negativeOverflow = negativeOverflow || x + sum >= 0;
         return positiveOverflow && negativeOverflow;
     }
 }
