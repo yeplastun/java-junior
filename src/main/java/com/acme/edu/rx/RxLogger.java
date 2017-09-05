@@ -26,6 +26,13 @@ public class RxLogger {
     private LogFormatter formatter;
     private LogSaver saver;
 
+    /**
+     * Asynchronous logger with embedded business logic.
+     *
+     * @param formatter Implementation of <b>LogFormatter</b> that provides format function for log message.
+     * @param saver     Implementation of <b>LogSaver</b> that provides api for saving log message anywhere you want.
+     * @apiNote After creating new instance it's necessary to subscribe to exceptions stream using {@link #getExceptionStream()}.
+     */
     public RxLogger(LogFormatter formatter, LogSaver saver) {
         stream = PublishSubject.create();
         exceptionStream = PublishSubject.create();
@@ -34,10 +41,28 @@ public class RxLogger {
         setUpStreamProcessing();
     }
 
-    public PublishSubject<LogMessageException> getExceptionStream() {
+    /**
+     * Provides separate stream of logging exceptions. All exceptions are instances or inherited
+     * from {@link LogMessageException}.
+     *
+     * @return {@link Observable} exception stream.
+     * To get exception use method {@link Observable#subscribe(Consumer)}.
+     */
+    public Observable<LogMessageException> getExceptionStream() {
         return exceptionStream;
     }
 
+    /**
+     * <b>Asynchronously</b> logs current message formatted by <b>LogFormatter</b>
+     * implementation via <b>LogSaver</b> implementation.
+     * <p>
+     * To get exception stream use {@link #getExceptionStream()}.
+     * To force output use {@link #flush()}.
+     * </p>
+     *
+     * @param message the message to be logged.
+     * @throws InvalidLogMessageException based on not-null check.
+     */
     public void log(@NotNull Object message) throws InvalidLogMessageException {
         if (message == null) {
             throw new InvalidLogMessageException("Log message shouldn't be null", null);
@@ -45,6 +70,9 @@ public class RxLogger {
         stream.onNext(message);
     }
 
+    /**
+     * Interrupts current buffer business logic and forces logging current results.
+     */
     public void flush() {
         stream.onComplete();
         stream = PublishSubject.create();
