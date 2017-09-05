@@ -16,6 +16,7 @@ public class StringLogProcessor {
 
     /**
      * Applies business logic for List of strings checking the subsequent equal strings.
+     *
      * @param strings Collection of sequential ints to process before logging.
      * @return Stream prepared for formatting.
      */

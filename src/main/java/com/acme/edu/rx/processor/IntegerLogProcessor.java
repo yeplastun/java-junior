@@ -14,6 +14,7 @@ public class IntegerLogProcessor {
 
     /**
      * Applies business logic for List of ints checking the overflow.
+     *
      * @param integers Collection of sequential ints to process before logging.
      * @return Stream prepared for formatting.
      */

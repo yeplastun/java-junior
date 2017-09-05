@@ -14,6 +14,7 @@ public class ByteLogProcessor {
 
     /**
      * Applies business logic for List of bytes checking the overflow.
+     *
      * @param bytes Collection of sequential bytes to process before logging.
      * @return Stream prepared for formatting.
      */

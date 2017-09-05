@@ -22,7 +22,11 @@ import java.util.List;
 public class RxLogger {
 
     @SuppressWarnings("UnnecessaryReturnStatement")
-    private static final Consumer<Object> NOOP = o -> { };
+    private static final Consumer<Object> NOOP = new Consumer<Object>() {
+        @Override
+        public void accept(Object o) throws Exception {
+        }
+    };
 
     private PublishSubject<Object> stream;
     private PublishSubject<LogMessageException> exceptionStream;
@@ -84,61 +88,54 @@ public class RxLogger {
 
     private void setUpStreamProcessing() {
         Observable.merge(Arrays.asList(
-                setUpObjectProcessing().map(formatter::format),
-                setUpBooleanProcessing().map(formatter::format),
-                setUpByteProcessing().map(formatter::format),
-                setUpIntegerProcessing().map(formatter::format),
-                setUpCharProcessing().map(formatter::format),
-                setUpStringProcessing().map(formatter::format),
-                setUpIntArrayProcessing().map(formatter::format)
+            setUpObjectProcessing().map(formatter::format),
+            setUpBooleanProcessing().map(formatter::format),
+            setUpByteProcessing().map(formatter::format),
+            setUpIntegerProcessing().map(formatter::format),
+            setUpCharProcessing().map(formatter::format),
+            setUpStringProcessing().map(formatter::format),
+            setUpIntArrayProcessing().map(formatter::format)
         ))
-                .doOnNext(saver::save)
-                .subscribe(NOOP, ex -> {
-                    flush();
-                    exceptionStream.onNext((LogMessageException) ex);
-                });
+            .doOnNext(saver::save)
+            .subscribe(NOOP, ex -> {
+                flush();
+                exceptionStream.onNext((LogMessageException) ex);
+            });
     }
 
     private Observable<Object> setUpObjectProcessing() {
-        return getTypeStream(Object.class)
-                .flatMap(Observable::fromIterable);
+        return getTypeStream(Object.class).flatMap(Observable::fromIterable);
     }
 
     private Observable<Boolean> setUpBooleanProcessing() {
-        return getTypeStream(Boolean.class)
-                .flatMap(Observable::fromIterable);
+        return getTypeStream(Boolean.class).flatMap(Observable::fromIterable);
     }
 
     private Observable<Byte> setUpByteProcessing() {
-        return getTypeStream(Byte.class)
-                .flatMap(ByteLogProcessor::process);
+        return getTypeStream(Byte.class).flatMap(ByteLogProcessor::process);
     }
 
     private Observable<Integer> setUpIntegerProcessing() {
-        return getTypeStream(Integer.class)
-                .flatMap(IntegerLogProcessor::process);
+        return getTypeStream(Integer.class).flatMap(IntegerLogProcessor::process);
     }
 
     private Observable<Character> setUpCharProcessing() {
-        return getTypeStream(Character.class)
-                .flatMap(Observable::fromIterable);
+        return getTypeStream(Character.class).flatMap(Observable::fromIterable);
     }
 
     private Observable<String> setUpStringProcessing() {
-        return getTypeStream(String.class)
-                .flatMap(StringLogProcessor::process);
+        return getTypeStream(String.class).flatMap(StringLogProcessor::process);
     }
 
     private Observable<int[]> setUpIntArrayProcessing() {
-        return getTypeStream(int[].class)
-                .flatMap(Observable::fromIterable);
+        return getTypeStream(int[].class).flatMap(Observable::fromIterable);
     }
 
     private <T> Observable<List<T>> getTypeStream(Class<T> clazz) {
         return stream
-                .ofType(clazz)
-                .filter(m -> m.getClass() == clazz)
-                .buffer(stream.map(Object::getClass).distinctUntilChanged())
-                .filter(l -> !l.isEmpty());
+            .ofType(clazz)
+            .filter(m -> m.getClass() == clazz)
+            .buffer(stream.map(Object::getClass).distinctUntilChanged())
+            .filter(l -> !l.isEmpty());
     }
 }
