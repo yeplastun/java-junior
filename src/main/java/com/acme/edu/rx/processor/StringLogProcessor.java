@@ -6,6 +6,7 @@ import io.reactivex.Observable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.IntStream;
 
 /**
  * Provides business logic of processing for instances of {@link String}.
@@ -25,24 +26,29 @@ public class StringLogProcessor {
             throw new InvalidLogMessageException("String message should not be null", "");
         }
 
+        List<Integer> counters = new ArrayList<>();
+        List<String> messages = new ArrayList<>();
         List<String> result = new ArrayList<>();
-        int counter = 1;
-        String previous = strings.get(0);
-        for (int i = 1; i < strings.size(); ++i) {
-            if (Objects.equals(strings.get(i), previous)) {
-                ++counter;
+        counters.add(0);
+        messages.add(strings.get(0));
+        strings.forEach(current -> {
+            int index = counters.size() - 1;
+            int counter = counters.get(index);
+            String previous = messages.get(index);
+            if (Objects.equals(current, previous)) {
+                counters.set(index, counter + 1);
             } else {
-                result.add(buildString(previous, counter));
-                counter = 1;
-                previous = strings.get(i);
+                counters.add(1);
+                messages.add(current);
             }
-        }
-        result.add(buildString(previous, counter));
+        });
+
+        IntStream.range(0, counters.size()).forEach(i -> result.add(buildString(messages.get(i), counters.get(i))));
 
         return Observable.fromIterable(result);
     }
 
     private static String buildString(String message, int counter) {
-        return counter == 1 ? message : message + String.format(" (x%d)", counter);
+        return message + (counter == 1 ? "" : String.format(" (x%d)", counter));
     }
 }
