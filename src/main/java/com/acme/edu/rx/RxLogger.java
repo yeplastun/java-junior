@@ -1,7 +1,6 @@
 package com.acme.edu.rx;
 
 import com.acme.edu.rx.exception.InvalidLogMessageException;
-import com.acme.edu.rx.exception.LoggingException;
 import com.acme.edu.rx.formatter.LogFormatter;
 import com.acme.edu.rx.processor.ByteLogProcessor;
 import com.acme.edu.rx.processor.IntegerLogProcessor;
@@ -32,7 +31,8 @@ public class RxLogger {
      *
      * @param formatter Implementation of <b>LogFormatter</b> that provides format function for log message.
      * @param saver     Implementation of <b>LogSaver</b> that provides api for saving log message anywhere you want.
-     * @apiNote After creating new instance it's necessary to subscribe to exceptions stream using {@link #getResponseStream()}.
+     * @apiNote After creating new instance it's necessary to subscribe to responses
+     * stream using {@link #getResponseStream()}.
      */
     public RxLogger(LogFormatter formatter, LogSaver saver) {
         stream = PublishSubject.create();
@@ -43,10 +43,10 @@ public class RxLogger {
     }
 
     /**
-     * Provides separate stream of logging exceptions. All exceptions are instances or inherited
-     * from {@link LoggingException}.
+     * Provides separate stream of logging responses. All exceptions are instances {@link LogResponse}.
+     * They notifies about log processing success or fail.
      *
-     * @return {@link Observable} exception stream.
+     * @return {@link Observable} response stream.
      * To get exception use method {@link Observable#subscribe(Consumer)}.
      */
     public Observable<LogResponse> getResponseStream() {
@@ -57,7 +57,7 @@ public class RxLogger {
      * <b>Asynchronously</b> logs current message formatted by <b>LogFormatter</b>
      * implementation via <b>LogSaver</b> implementation.
      * <p>
-     * To get exception stream use {@link #getResponseStream()}.
+     * To get response stream use {@link #getResponseStream()}.
      * To force output use {@link #flush()}.
      * </p>
      *
@@ -96,7 +96,7 @@ public class RxLogger {
                 ex -> {
                     flush();
                     responseStream.onNext(new LogResponse(ex));
-            });
+                });
     }
 
     private Observable<Object> setUpObjectProcessing() {
