@@ -6,6 +6,7 @@ import com.acme.edu.rx.exception.LogMessageException;
 import com.acme.edu.rx.formatter.TestLogFormatter;
 import com.acme.edu.rx.saver.ConsoleLogSaver;
 import com.acme.edu.rx.saver.ExceptionTestSaver;
+import com.sun.javaws.exceptions.InvalidArgumentException;
 import io.reactivex.observers.TestObserver;
 import org.junit.Before;
 import org.junit.Test;
@@ -49,7 +50,7 @@ public class RxLoggerExceptionTest {
             && Objects.equals(ex.getLogMessage(), ""));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = InvalidLogMessageException.class)
     @SuppressWarnings("ConstantConditions")
     public void shouldThrowIllegalArgumentException() throws InvalidLogMessageException {
         // Given
