@@ -6,6 +6,14 @@ import java.util.Arrays;
  * Provides interface for access to formatting logic component.
  */
 public class TrivialLogFormatter implements LogFormatter {
+    private static final String FORMAT = "%s: %s";
+
+    private static final String REFERENCE_PREFIX = "reference";
+    private static final String PRIMITIVE_PREFIX = "primitive";
+    private static final String CHAR_PREFIX = "char";
+    private static final String STRING_PREFIX = "string";
+    private static final String PRIMITIVES_ARRAY_PREFIX = "primitives array";
+
     /**
      * Encapsulates formatting for instances of {@link Object} and other classes which don't have specific formatting.
      *
@@ -14,7 +22,7 @@ public class TrivialLogFormatter implements LogFormatter {
      */
     @Override
     public String format(Object message) {
-        return "reference: " + message.toString();
+        return String.format(FORMAT, REFERENCE_PREFIX, message.toString());
     }
 
     /**
@@ -25,7 +33,7 @@ public class TrivialLogFormatter implements LogFormatter {
      */
     @Override
     public String format(Boolean message) {
-        return formatPrimitive(message);
+        return String.format(FORMAT, PRIMITIVE_PREFIX, message.toString());
     }
 
     /**
@@ -36,7 +44,7 @@ public class TrivialLogFormatter implements LogFormatter {
      */
     @Override
     public String format(Byte message) {
-        return formatPrimitive(message);
+        return String.format(FORMAT, PRIMITIVE_PREFIX, message.toString());
     }
 
     /**
@@ -47,7 +55,7 @@ public class TrivialLogFormatter implements LogFormatter {
      */
     @Override
     public String format(Integer message) {
-        return formatPrimitive(message);
+        return String.format(FORMAT, PRIMITIVE_PREFIX, message.toString());
     }
 
     /**
@@ -58,7 +66,7 @@ public class TrivialLogFormatter implements LogFormatter {
      */
     @Override
     public String format(Character message) {
-        return "char: " + message.toString();
+        return String.format(FORMAT, CHAR_PREFIX, message.toString());
     }
 
     /**
@@ -69,7 +77,7 @@ public class TrivialLogFormatter implements LogFormatter {
      */
     @Override
     public String format(String message) {
-        return "string: " + message;
+        return String.format(FORMAT, STRING_PREFIX, message);
     }
 
     /**
@@ -80,10 +88,6 @@ public class TrivialLogFormatter implements LogFormatter {
      */
     @Override
     public String format(int[] message) {
-        return "primitives array: " + Arrays.toString(message);
-    }
-
-    private String formatPrimitive(Object message) {
-        return "primitive: " + message.toString();
+        return String.format(FORMAT, PRIMITIVES_ARRAY_PREFIX, Arrays.toString(message));
     }
 }

@@ -25,7 +25,7 @@ public class IntegerLogProcessor {
             int index = result.size() - 1;
             int value = result.get(index);
             if (Utils.isAdditionSafe(value, x)) {
-                result.set(index, (value + x));
+                result.set(index, value + x);
             } else {
                 result.add(x);
             }
