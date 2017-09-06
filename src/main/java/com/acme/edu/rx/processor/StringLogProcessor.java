@@ -23,7 +23,7 @@ public class StringLogProcessor {
      */
     public static Observable<String> process(List<String> strings) throws InvalidLogMessageException {
         if (strings.stream().filter(String::isEmpty).count() > 0) {
-            throw new InvalidLogMessageException("String message should not be null", "");
+            throw new InvalidLogMessageException("String message should not be empty", "");
         }
 
         List<Integer> counters = new ArrayList<>();
@@ -33,10 +33,8 @@ public class StringLogProcessor {
         messages.add(strings.get(0));
         strings.forEach(current -> {
             int index = counters.size() - 1;
-            int counter = counters.get(index);
-            String previous = messages.get(index);
-            if (Objects.equals(current, previous)) {
-                counters.set(index, counter + 1);
+            if (Objects.equals(current, messages.get(index))) {
+                counters.set(index, counters.get(index) + 1);
             } else {
                 counters.add(1);
                 messages.add(current);
