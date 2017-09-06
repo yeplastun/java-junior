@@ -82,13 +82,13 @@ public class RxLogger {
 
     private void setUpStreamProcessing() {
         Observable.merge(Arrays.asList(
-            setUpObjectProcessing().map(formatter::format),
-            setUpBooleanProcessing().map(formatter::format),
-            setUpByteProcessing().map(formatter::format),
-            setUpIntegerProcessing().map(formatter::format),
-            setUpCharProcessing().map(formatter::format),
-            setUpStringProcessing().map(formatter::format),
-            setUpIntArrayProcessing().map(formatter::format)
+            getTypeStream(Object.class).flatMap(Observable::fromIterable).map(formatter::format),
+            getTypeStream(Boolean.class).flatMap(Observable::fromIterable).map(formatter::format),
+            getTypeStream(Byte.class).flatMap(ByteLogProcessor::process).map(formatter::format),
+            getTypeStream(Integer.class).flatMap(IntegerLogProcessor::process).map(formatter::format),
+            getTypeStream(Character.class).flatMap(Observable::fromIterable).map(formatter::format),
+            getTypeStream(String.class).flatMap(StringLogProcessor::process).map(formatter::format),
+            getTypeStream(int[].class).flatMap(Observable::fromIterable).map(formatter::format)
         ))
             .doOnNext(saver::save)
             .subscribe(
@@ -97,34 +97,6 @@ public class RxLogger {
                     flush();
                     responseStream.onNext(new LogResponse(ex));
                 });
-    }
-
-    private Observable<Object> setUpObjectProcessing() {
-        return getTypeStream(Object.class).flatMap(Observable::fromIterable);
-    }
-
-    private Observable<Boolean> setUpBooleanProcessing() {
-        return getTypeStream(Boolean.class).flatMap(Observable::fromIterable);
-    }
-
-    private Observable<Byte> setUpByteProcessing() {
-        return getTypeStream(Byte.class).flatMap(ByteLogProcessor::process);
-    }
-
-    private Observable<Integer> setUpIntegerProcessing() {
-        return getTypeStream(Integer.class).flatMap(IntegerLogProcessor::process);
-    }
-
-    private Observable<Character> setUpCharProcessing() {
-        return getTypeStream(Character.class).flatMap(Observable::fromIterable);
-    }
-
-    private Observable<String> setUpStringProcessing() {
-        return getTypeStream(String.class).flatMap(StringLogProcessor::process);
-    }
-
-    private Observable<int[]> setUpIntArrayProcessing() {
-        return getTypeStream(int[].class).flatMap(Observable::fromIterable);
     }
 
     private <T> Observable<List<T>> getTypeStream(Class<T> clazz) {
